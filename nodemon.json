@@ -5,5 +5,5 @@
     "watch": [
         "src/"
     ],
-    "ext": "js,html,css"
+    "ext": "js,html,css,json"
 }
