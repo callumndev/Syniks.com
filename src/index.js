@@ -1,18 +1,3 @@
-// const express = require('express'),
-//     //   bodyParser = require('body-parser'),
-//       path = require('path');
-
-// let syniks.app = express(),
-//     port = process.env.PORT || 9000
-
-// require( 'ejs' );
-// syniks.app.set( 'view engine', 'ejs' )
-
-// syniks.app.use( express.static( path.join( __dirname, 'public' ) ) )
-// syniks.app.use('/', require('./routes'))
-
-// syniks.app.listen(port)
-// console.log(`Live on port ${port}`)
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 global.syniks = {
