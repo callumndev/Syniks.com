@@ -1,10 +1,3 @@
-// const fs = require( 'fs' ),
-//     path = require( 'path' );
-
-// module.exports = dir => fs.readdirSync( dir )
-//     .filter( file => !fs.lstatSync( path.join( dir, file ) ).isDirectory() )
-//         .map( file => require( path.join( dir, file ) ) );
-
 const fs = require( 'fs' ),
     path = require( 'path' );
 
