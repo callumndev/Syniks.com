@@ -1,0 +1,53 @@
+.typing {
+    position: relative;
+    -webkit-box-reflect: below 1px linear-gradient(transparent, #3333);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+
+.typing h2 {
+    position: relative;
+    color: #4FC3F7;
+    letter-spacing: 5px;
+    font-size: 4rem;
+    margin-bottom: 0;
+}
+
+/**/
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #20374c; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4c9be8;
+}
+
+/**/
+
+.marketing .col-lg-4 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.marketing .col-lg-4 p {
+  margin-right: .75rem;
+  margin-left: .75rem;
+}
+
+
+.divider {
+  margin: 5rem 0;
+}
+
+
+a {
+    text-decoration: none !important;
+}
