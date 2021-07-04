@@ -1,6 +1,21 @@
 const fs = require( 'fs' ),
     path = require( 'path' );
 
-module.exports = dir => fs.readdirSync( dir )
-    .filter( file => !fs.lstatSync( path.join( dir, file ) ).isDirectory() )
-        .map( file => ( { name: file.split( '.' )[ 0 ], util: require( path.join( dir, file ) ) } ) );
+function read( dir ) {
+    let filesAndDirs = fs.readdirSync( dir ),
+        files = filesAndDirs.filter( file => !fs.lstatSync( path.join( dir, file ) ).isDirectory() ),
+        dirs = filesAndDirs.filter( file => fs.lstatSync( path.join( dir, file ) ).isDirectory() ),
+        _files = [];
+            
+    dirs.forEach( directory => {        
+        for ( const [ k, v ] of Object.entries( read( path.join( dir, directory ) ) ) ) {
+            _files.push( { name: v.name, util: v.util } );
+        };
+    } );
+
+    files.forEach( file => _files.push( { name: file.split( '.' )[ 0 ], util: require( path.join( dir, file ) ) } ) );
+
+    return _files;
+};
+
+module.exports = read;
