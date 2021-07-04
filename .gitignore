@@ -108,3 +108,5 @@ dist
 
 
 list.txt
+config-development.json
+config-production.json
