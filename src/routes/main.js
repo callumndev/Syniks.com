@@ -1,6 +1,6 @@
 const main = syniks.router();
 
-main.get( '/', ( req, res ) => res.render( 'index' ) );
+main.get( '/', ( req, res ) => syniks.util.render( req, res, 'index' ) );
 
 main.get( '/invite', ( req, res ) => res.redirect( syniks.settings.botInvite ) );
 
