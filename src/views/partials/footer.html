@@ -25,7 +25,7 @@
                         <a href="/support">Support</a>
                     </li>
                     
-                    <% if( locals.req && req.user ) { %>
+                    <% if( isAuthenticated ) { %>
                         <li>
                             <a href="/auth/logout">Logout</a>
                         </li>
@@ -58,6 +58,6 @@
     </div>
     
     <div class="footer-copyright text-center py-3">
-        &copy; 2021 Radontrax.
+        &copy; 2021 Radontrax. Build: v<%= locals.version %> <%= locals.NODE_ENV %>
     </div>
 </footer>

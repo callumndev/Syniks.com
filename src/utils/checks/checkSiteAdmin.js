@@ -3,7 +3,7 @@ module.exports = ( req, res, next ) => {
     let isSiteAdmin = syniks.util.auth.isSiteAdmin( id );
 
     if ( !isSiteAdmin ) {
-        res.status( 403 ).render( 'errors/403' );
+        syniks.util.throwError( 403, req, res );
     } else {
         next();
     };

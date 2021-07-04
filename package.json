@@ -26,9 +26,16 @@
     "ejs": "^3.1.6",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "express-session-sequelize": "^2.3.0",
     "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
-    "path": "^0.12.7"
+    "mysql2": "^2.2.5",
+    "on-headers": "^1.0.2",
+    "passport": "^0.4.1",
+    "passport-discord": "^0.1.4",
+    "path": "^0.12.7",
+    "sequelize": "^6.6.4"
   }
 }

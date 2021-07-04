@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/header.html') %>
+
+    <body>
+        <main>
+            <div class="container col-xxl-8 px-4 py-5">
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold"><%= user.username %>#<%= user.discriminator %></h1>
+                    
+                    <div class="col-lg-6 mx-auto">
+                        <p class="lead mb-4">Some profile content for <%= user.username %>#<%= user.discriminator %> (<%= user.id %>)</p>
+                        
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                            <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="375" height="375" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+
+    <%- include('./partials/footer.html') %>
+
+</html>
