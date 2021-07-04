@@ -1,0 +1,63 @@
+<footer class="page-footer font-small blue pt-4">
+    <div class="container-fluid text-center text-md-left">
+        <div class="row">
+            <div class="col-md-6 mt-md-0 mt-3">
+                <h5 class="text-uppercase">Syniks.com</h5>
+
+                <p>
+                    It's time to use Syniks in your community...
+                    <br/>
+                    Make your server better with Syniks as your server's bot <a href="/invite">today</a>
+                </p>
+            </div>
+            
+            <hr class="clearfix w-100 d-md-none pb-3">
+        
+            <div class="col-md-3 mb-md-0 mb-3">
+                <h5 class="text-uppercase">Important Links</h5>
+                
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/invite">Invite Syniks</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/support">Support</a>
+                    </li>
+                    
+                    <% if( locals.req && req.user ) { %>
+                        <li>
+                            <a href="/auth/logout">Logout</a>
+                        </li>
+                    <% } else { %>
+                        <li>
+                            <a href="/auth/login">Login</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+            
+            <div class="col-md-3 mb-md-0 mb-3">
+                <h5 class="text-uppercase">About</h5>
+                
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/about/privacy">Privacy</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/terms">Terms</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/support">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-copyright text-center py-3">
+        &copy; 2021 Radontrax.
+    </div>
+</footer>

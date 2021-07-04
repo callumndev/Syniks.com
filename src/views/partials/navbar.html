@@ -1,0 +1,94 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid" id="loginContainer">
+        <a class="navbar-brand me-3 ms-3" href="#">
+            <img src="/images/Syniks.png" alt="Syniks logo" height="50" width="50">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        
+        <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Home
+                        <span class="visually-hidden">(current)</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Features</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/invite">Invite</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/support">Support</a>
+                </li>
+                
+                <% if( locals.req && req.user ) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">|</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Profile</a>
+                    </li>
+                <% } %>
+            </ul>
+
+            <% if( locals.req && req.user ) { %>
+                <div class="btn-group">
+                    <div class="btn-group dropstart" role="group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropstart</span>
+                        </button>
+                        
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item current" aria-current="true" href="/profile">Profile</a></li>
+        
+                            <li><hr class="dropdown-divider"></li>
+        
+                            <li><a class="dropdown-item" href="/profile/servers">Manage Servers</a></li>
+                            <li><a class="dropdown-item" href="/support">Support</a></li>
+        
+                            <li><hr class="dropdown-divider"></li>
+        
+                            <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+                        </ul>
+                    </div>
+    
+                    <a class="btn btn-secondary" href="/profile" role="button">Username</a>
+                </div>
+            <% } else { %>
+                <a class="btn btn-primary" href="/auth/login" role="button" id="loginButton">Login with Discord</a>
+            <% } %>
+        </div>
+    </div>
+</nav>
+
+<script>
+    const id = '#loginButton',
+        redirectIn = 0.5;
+
+    $( id ).on( 'click', event => {
+        event.preventDefault();
+
+        if ( $( this ).attr( 'clicked' ) ) {
+            return;
+        } else {
+            $( this ).attr( 'clicked', true );
+        };
+
+        $( id ).append(
+            '<div class="spinner-border spinner-border-sm ms-2" role="status">\
+                <span class="visually-hidden">Loading...</span>\
+            </div>'
+        );
+
+        setTimeout( () => $( location ).attr( 'href', $( id ).attr('href') ), redirectIn * 1000 );
+    } );
+</script>
