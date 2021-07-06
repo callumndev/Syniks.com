@@ -20,11 +20,10 @@ const express = require( 'express' ),
     Strategy = require( 'passport-discord' ).Strategy,
     { Sequelize, DataTypes } = require( 'sequelize' );
 
-const settings    = require( path.join( __dirname, 'config-production.json' ) ),
-    settingsDev = require( path.join( __dirname, 'config-development.json' ) );
+const settings    = require( path.join( __dirname, 'config-production.json' ) );
 
 syniks.settings = process.env.NODE_ENV == 'development' ?
-    _.merge( settings, settingsDev ) :
+    _.merge( settings, require( path.join( __dirname, 'config-development.json' ) ) ) :
     settings;
 
 
