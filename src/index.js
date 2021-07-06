@@ -52,7 +52,7 @@ syniks.db.sync()
 
 
 // Services
-//
+syniks.services = syniks.util.requireDirFiles( path.join( __dirname, 'services' ) );
 
 
 // Routes
@@ -94,6 +94,87 @@ syniks.passport.serializeUser( ( user, done ) => done( null, user ) );
 syniks.passport.deserializeUser( ( obj, done ) => done( null, obj ) );
 
 syniks.passport.use( new Strategy( syniks.settings.auth, ( accessToken, refreshToken, profile, done ) => {
+    let avatarURL =  profile.avatar ? `https://cdn.discordapp.com/avatars/${ profile.id }/${ profile.avatar }` : 'https://discord.com/assets/f9bb9c4af2b9c32a2c5ee0014661546d.png';
+    profile.avatar = `${ avatarURL }?size=4096`;
+    profile.avatarSmall = `${ avatarURL }?size=256`;
+
+    profile.refreshToken = refreshToken;
+    profile.guilds = typeof profile.guilds == 'object' ? profile.guilds : [];
+
+    delete profile.mfa_enabled;
+    delete profile.locale;
+    delete profile.verified;
+    delete profile.flags;
+    delete profile.premium_type;
+    delete profile.public_flags;
+    delete profile.provider;
+
+    profile.guilds.map( async guild => {
+        let iconURL =  guild.icon ? `https://cdn.discordapp.com/icons/${ guild.id }/${ guild.icon }` : 'https://discord.com/assets/f9bb9c4af2b9c32a2c5ee0014661546d.png';
+        guild.icon = `${ iconURL }?size=4096`;
+        guild.iconSmall = `${ iconURL }?size=256`;
+
+        delete guild.icon_hash;
+        delete guild.splash;
+        delete guild.discovery_splash;
+        delete guild.region;
+        delete guild.afk_channel_id;
+        delete guild.afk_timeout;
+        delete guild.widget_enabled;
+        delete guild.widget_channel_id;
+        delete guild.verification_level;
+        delete guild.default_message_notifications;
+        delete guild.explicit_content_filter;
+        delete guild.roles;
+        delete guild.emojis;
+        delete guild.features;
+        delete guild.mfa_level;
+        delete guild.application_id;
+        delete guild.system_channel_id;
+        delete guild.system_channel_flags;
+        delete guild.rules_channel_id;
+        delete guild.large;
+        delete guild.unavailable;
+        delete guild.voice_states;
+        delete guild.members;
+        delete guild.channels;
+        delete guild.threads;
+        delete guild.presences;
+        delete guild.max_presences;
+        delete guild.max_members;
+        delete guild.vanity_url_code;
+        delete guild.description;
+        delete guild.banner;
+        delete guild.premium_tier;
+        delete guild.premium_subscription_count;
+        delete guild.preferred_locale;
+        delete guild.public_updates_channel_id;
+        delete guild.max_video_channel_users;
+        delete guild.approximate_member_count;
+        delete guild.approximate_presence_count;
+        delete guild.welcome_screen;
+        delete guild.nsfw_level;
+        delete guild.stage_instances;
+        delete guild.permissions_new;
+
+        if ( syniks.services.discord.bot.guilds.cache.has( guild.id ) ) {
+            let [ config, created ] = await syniks.db.config.findOrCreate( { where: { id: guild.id } } );
+    
+            for ( let [ k, v ] of Object.entries( config ) ) {
+                k = v == '' ? null : v;            
+            };
+    
+            guild.config = config;
+        } else {
+            guild.config = null;
+        };
+        
+        guild.a = 'b';
+
+
+        return guild;
+    } );
+        
     process.nextTick( () => done( null, profile ) );
 } ) );
 
@@ -147,11 +228,11 @@ syniks.app.use( ( req, res, next ) => {
         html: () => {
             syniks.util.throwError( 404, req, res, { url: req.url } )
         },
-        json: function () {
-            res.json({ error: 'Not found' })
+        json: () => {
+            res.json( { error: '404 Not found' } );
         },
-        default: function () {
-            res.type('txt').send('Not found')
+        default: () => {
+            res.type( 'txt' ).send('404 Not found');
         }
     } );
 } );
