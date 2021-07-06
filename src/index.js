@@ -112,6 +112,7 @@ syniks.passport.use( new Strategy( syniks.settings.auth, ( accessToken, refreshT
         let iconURL =  guild.icon ? `https://cdn.discordapp.com/icons/${ guild.id }/${ guild.icon }` : 'https://discord.com/assets/f9bb9c4af2b9c32a2c5ee0014661546d.png';
         guild.icon = `${ iconURL }?size=4096`;
         guild.iconSmall = `${ iconURL }?size=256`;
+        guild.inviteURL = `${ syniks.settings.botInvite }&guild_id=${ guild.id }&redirect_uri=${ syniks.settings.siteURL }/invited?redirect=${ encodeURIComponent( '/profile' ) }`;
 
         delete guild.icon_hash;
         delete guild.splash;
@@ -155,21 +156,6 @@ syniks.passport.use( new Strategy( syniks.settings.auth, ( accessToken, refreshT
         delete guild.nsfw_level;
         delete guild.stage_instances;
         delete guild.permissions_new;
-
-        if ( syniks.services.discord.bot.guilds.cache.has( guild.id ) ) {
-            let [ config, created ] = await syniks.db.config.findOrCreate( { where: { id: guild.id } } );
-    
-            for ( let [ k, v ] of Object.entries( config ) ) {
-                k = v == '' ? null : v;            
-            };
-    
-            guild.config = config;
-        } else {
-            guild.config = null;
-        };
-        
-        guild.a = 'b';
-
 
         return guild;
     } );
