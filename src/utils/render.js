@@ -4,6 +4,7 @@ module.exports = ( req, res, template, data = {} ) => {
     const baseData = {
         isAuthenticated: isAuthenticated,
         user: isAuthenticated ? req.user : null,
+        bot: syniks.services.discord.bot,
         
         ...data
     };
