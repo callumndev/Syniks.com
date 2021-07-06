@@ -1,3 +1,8 @@
+<%
+    let manageableGuilds = user.guilds.filter( guild => ( new permissions( guild.permissions ) ).has( 'MANAGE_GUILD' ) ),
+        manageableGuildsCount = manageableGuilds.length;
+%>
+
 <!DOCTYPE html>
 <html lang="en">
     <%- include('./partials/header.html') %>
@@ -17,7 +22,7 @@
                         <p class="lead">
                             Welcome!
                             <br/>
-                            You have <%= user.guilds.filter( guild => ( new permissions( guild.permissions ) ).has( 'MANAGE_GUILD' ) ).length; %> guilds you can manage.
+                            You have <%= manageableGuildsCount2 %> guilds you can manage.
                         </p>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
@@ -46,7 +51,7 @@
 
                                 <hr>
                                 
-                                <p>Servers: <%= user.guilds.length %> (<%= user.guilds.filter( guild => ( new permissions( guild.permissions ) ).has( 'MANAGE_GUILD' ) ).length; %> Manageable)</p>
+                                <p>Servers: <%= user.guilds.length %> (<%= manageableGuildsCount %> Manageable)</p>
                                 <p>Fetched At: <%= moment( new Date( user.fetchedAt ) ).fromNow() %></p>
                             </div>
                             
@@ -61,21 +66,26 @@
 
 
                 <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-                    <% user.guilds.forEach( guild => {
-                        if ( !( new permissions( guild.permissions ) ).has( 'MANAGE_GUILD' ) ) return;
+                    <%
+                        manageableGuilds.forEach( guild => {
+                            guild.exists = bot.guilds.cache.has( guild.id );
                     %>
                         <div class="card" style="max-width: 18rem; margin: 2rem; min-width: 18rem; border: none;">
                             <img src="<%= guild.icon %>" class="card-img-top" style="max-width: 18rem; min-width: 18rem; max-height: 18rem; min-height: 18rem;">
                             
                             <div class="card-body" style="text-align: center;">
                                 <h5 class="card-title"><%= guild.name %></h5>
+
                                 <p class="card-text">
                                     <hr>
                                     <%= guild.id %>
                                 </p>
 
-
-                                <a href="/dashboard/<%= guild.id %>" class="btn btn-primary btn-lg px-4 me-md-2">Manage</a>
+                                <% if ( guild.exists ) { %>
+                                    <a href="/dashboard/<%= guild.id %>" class="btn btn-primary btn-lg px-4 me-md-2">Manage</a>
+                                <% } else { %>
+                                    <a href="<%= guild.inviteURL %>" class="btn btn-primary btn-lg px-4 me-md-2">Invite</a>
+                                <% } %>
                             </div>
                         </div>
                     <% } ); %>
