@@ -211,20 +211,27 @@ syniks.app.use( ( req, res, next ) => {
     
     res.format( {
         html: () => {
-            syniks.util.throwError( 404, req, res, { url: req.url } )
+            syniks.util.throwError( 404, req, res )
         },
         json: () => {
             res.json( { error: '404 Not found' } );
         },
         default: () => {
-            res.type( 'txt' ).send('404 Not found');
+            res.type( 'txt' ).send( '404 Not found' );
         }
     } );
 } );
 
 syniks.app.use( ( err, req, res, next ) => {
     res.status( err.status || 500 );
-    syniks.util.throwError( 500, req, res, { error: err } )
+
+    let error = err.message.split( '\n\n' );
+    error = {
+        ...err,
+        message: error[ error.length - 1 ]
+    };
+
+    syniks.util.throwError( 500, req, res, { error } )
 } );
 
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../partials/header.html') %>
+
+    <body>
+        <main>
+            <div class="typing mt-5 my-5">
+                <h2 class="text-uppercase"><%= code %></h2>
+            </div>
+
+            <div class="container col-xxl-8 px-4 py-5">
+                <div class="px-4 py-5 my-5 text-center">
+                    <% if ( locals.url ) { %>
+                        <h1 class="display-5 fw-bold"><%= url %></h1>
+                    <% } %>
+                    
+                    <div class="col-lg-6 mx-auto">
+                        <% if ( locals.info ) { %>
+                            <p class="lead mb-4"><%= info %></p>
+                        <% } %>
+
+                        <br>
+
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                            <a href="/" class="btn btn-primary btn-lg px-4 me-md-2">Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+
+    <%- include('../partials/footer.html') %>
+
+</html>

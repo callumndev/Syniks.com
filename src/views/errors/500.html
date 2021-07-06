@@ -1,2 +1,9 @@
-<h2>Error: <%= error.message %></h2>
-<p>An error occurred!</p>
+<%
+    if ( !locals.info ) {
+        locals.info = locals.error ? error.message : 'Unknown Error';
+    };
+
+    locals.code = 500;
+%>
+
+<%- include('./error_base.html', { url, info }) %>

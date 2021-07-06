@@ -1,1 +1,9 @@
-<h2>403: Forbidden</h2>
+<%
+    if ( !locals.info ) {
+        locals.info = 'Access Forbidden';
+    };
+
+    locals.code = 403;
+%>
+
+<%- include('./error_base.html', { url, info }) %>
