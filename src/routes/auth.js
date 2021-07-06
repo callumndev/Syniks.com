@@ -19,6 +19,7 @@ auth.get( '/logout', ( req, res ) => {
     } );
 } );
 
+
 module.exports = auth;
 module.exports.config = {
     path: '/auth',
