@@ -3,7 +3,7 @@
         ".git"
     ],
     "watch": [
-        "src/"
+        "src"
     ],
-    "ext": "js,html,css,json"
+    "ext": "*"
 }
