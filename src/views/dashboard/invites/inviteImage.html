@@ -1,0 +1,29 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Invite Image (URL)</h5>
+            <p class="card-text">The image used in the invite management channel</p>
+
+            <br>
+            
+            <input type="text" class="form-control" name="inviteImage" value="<%= guild.config.inviteImage %>" placeholder="<%= guild.config.inviteImage %>">
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Invite Image</h5>
+            <p class="card-text">Rendered image of the current invite image URL</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+                <% if ( guild.config.inviteImage ) { %>
+                    <img src="<%= guild.config.inviteImage %>" class="d-block mx-lg-auto img-fluid" alt="inviteImage" width="375" height="375" loading="lazy">
+                <% } else { %>
+                    Not Set
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

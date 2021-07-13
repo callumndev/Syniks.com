@@ -1,0 +1,28 @@
+<h2>Invites</h2>
+
+<br>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#inviteManagementChannel" role="tab" aria-controls="inviteManagementChannel" aria-selected="true">Invite Management Channel</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#inviteImage" role="tab" aria-controls="inviteImage" aria-selected="false">Invite Image</a>
+    </li>
+</ul>
+
+
+<div class="container-sm center mx-0 px-0 mt-5" style="min-width: 100%;">
+    <div class="d-grid gap-2 mx-auto">
+        <form method="POST">
+            <div class="tab-content mb-5">
+                <div class="tab-pane fade show active" id="inviteManagementChannel" role="tabpanel"><%- include('./inviteManagementChannel.html') %></div>
+            
+                <div class="tab-pane fade" id="inviteImage" role="tabpanel"><%- include('./inviteImage.html') %></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>

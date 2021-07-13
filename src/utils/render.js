@@ -7,6 +7,8 @@ module.exports = ( req, res, template, data = {} ) => {
         bot: syniks.services.discord.bot,
 
         url: req.url,
+
+        moment: require( 'moment' ),
         
         ...data
     };

@@ -1,0 +1,41 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Invite Management Channel</h5>
+            <p class="card-text">The channel used for invite management</p>
+
+            <br>
+            
+            <%- include('../channelSelector.html', { channel: guild.config.inviteChannel, name: 'inviteChannel' }) %>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Invite Management Channel</h5>
+            <p class="card-text">Information about the current Invite Management channel</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+                <%
+                    let inviteChannel = guild.channels.cache.get( guild.config.inviteChannel );
+                %>
+                
+                <% if ( inviteChannel ) { %>
+                    <% if ( inviteChannel.parent ) { %>
+                        <%- include('../discordChannel.html', { name: inviteChannel.parent.name, category: true }) %>
+                    <% } %>
+
+                    <div class="<%= inviteChannel.parent ? 'ms-4 mt-1' : '' %>">
+                        <%- include('../discordChannel.html', { name: inviteChannel.name }) %>
+                    </div>
+                <% } else if ( !guild.config.inviteChannel ) { %>
+                    Not Set
+                <% } else if ( !inviteChannel ) { %>
+                    Deleted Channel
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,8 +1,8 @@
 const main = syniks.router();
 
-main.get( '/', ( req, res ) => syniks.util.render( req, res, 'index' ) );
+main.get( '/', ( req, res ) => syniks.util.render( req, res, 'index.html' ) );
 
-main.get( '/invite', ( req, res ) => res.redirect( syniks.settings.botInvite ) );
+main.get( '/invite', ( req, res ) => res.redirect( `${ syniks.settings.botInvite }&redirect_uri=${ encodeURIComponent( `${ syniks.settings.siteURL }/invited?redirect=/`) }` ) );
 
 main.get( '/invited', ( req, res ) => res.redirect( req.query.redirect || '/' ) );
 

@@ -1,0 +1,28 @@
+<h2>Logs</h2>
+
+<br>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#logsModLogs" role="tab" aria-controls="logsModLogs" aria-selected="true">Mod Logs</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#logsEventLogs" role="tab" aria-controls="logsEventLogs" aria-selected="false">Event Logs</a>
+    </li>
+</ul>
+
+
+<div class="container-sm center mx-0 px-0 mt-5" style="min-width: 100%;">
+    <div class="d-grid gap-2 mx-auto">
+        <form method="POST">
+            <div class="tab-content mb-5">
+                <div class="tab-pane fade show active" id="logsModLogs" role="tabpanel"><%- include('./modLogs.html') %></div>
+            
+                <div class="tab-pane fade" id="logsEventLogs" role="tabpanel"><%- include('./eventLogs.html') %></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>

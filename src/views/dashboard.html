@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/header.html') %>
+
+    <body class="app-body">
+        <% if ( typeof locals.alerts == 'object' && locals.alerts.length > 0  ) { %>
+            <div class="modal fade" id="alertsModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Server Update - Alerts</h5>
+                            
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <% alerts.forEach( alert => { %>
+                                <p><%= alert %></p>
+                            <% } ); %>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $( window ).on( 'load', () => $( '#alertsModal' ).modal( 'show' ) );
+            </script>
+        <% } %>
+        
+
+        <header class="navbar navbar-dark flex-md-nowrap p-0">
+            <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3"><%= guild.name %></a>
+        </header>
+        
+        <div class="container-fluid">
+            <div class="row">
+                <hr>
+
+                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar" style="border-right: 1px solid;">
+                    <div class="position-sticky pt-3">
+                        <ul class="nav nav-tabs flex-column mb-2">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+                            </li>
+
+                            
+                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                                <span>Config</span>
+                            </h6>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#general" role="tab" aria-controls="logs" aria-selected="false">General</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#logs" role="tab" aria-controls="logs" aria-selected="false">Logs</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#voiceChannel" role="tab" aria-controls="logs" aria-selected="false">Voice Channel</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#invites" role="tab" aria-controls="logs" aria-selected="false">Invites</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#serverStats" role="tab" aria-controls="logs" aria-selected="false">Server Stats</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                
+                
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style="height: 100vh;">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel"><%- include('./dashboard/home/index.html') %></div>
+
+                        <div class="tab-pane fade" id="general" role="tabpanel"><%- include('./dashboard/general/index.html') %></div>
+                        <div class="tab-pane fade" id="logs" role="tabpanel"><%- include('./dashboard/logs/index.html') %></div>
+                        <div class="tab-pane fade" id="voiceChannel" role="tabpanel"><%- include('./dashboard/voiceChannel/index.html') %></div>
+                        <div class="tab-pane fade" id="invites" role="tabpanel"><%- include('./dashboard/invites/index.html') %></div>
+                        <div class="tab-pane fade" id="serverStats" role="tabpanel"><%- include('./dashboard/serverStats/index.html') %></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </body>
+</html>

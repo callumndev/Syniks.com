@@ -1,0 +1,15 @@
+<div class="discord-channelContainer px-2">
+    <a class="discord-channelContent">
+        <div class="discord-iconContainer">
+            <% if ( locals.category ) { %>
+                <img src="/images/discord-categoryIcon.svg" class="discord-hashtagIcon" />
+            <% } else { %>
+                <img src="/images/discord-hashtagIcon.svg" class="discord-hashtagIcon" />
+            <% } %>
+        </div>
+        
+        <div class="discord-channelName">
+            <%= name %>
+        </div>
+    </a>
+</div>

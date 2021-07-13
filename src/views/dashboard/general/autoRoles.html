@@ -1,0 +1,79 @@
+<%
+function toColor( num ) {
+    num >>>= 0;
+
+    let b = num & 0xFF,
+        g = ( num & 0xFF00 ) >>> 8,
+        r = ( num & 0xFF0000 ) >>> 16,
+        a = ( ( num & 0xFF000000 ) >>> 24 ) / 255;
+
+    return 'rgba(' + [ r, g, b, a ].join( ',' ) + ')';
+};
+%>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Add Auto Roles</h5>
+            <p class="card-text">Add a role to be automatically given to members when they join the server</p>
+
+            <br>
+            
+            <%- include('../roleSelector.html', { name: 'addAutoRole' } ) %>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Auto Roles</h5>
+            <p class="card-text">Roles to be automatically given to members when they join the server</p>
+            
+            <br>
+
+            <div class="card-content">
+                <ol class="list-group list-group-numbered">
+                    <%
+                        guild.config.autoRoles.forEach( role => {
+                            let autoRole = guild.roles.cache.get( role );
+                    %>
+                        <li class="list-group-item d-flex justify-content-between align-items-start" id="autoRole-<%= role || 'null' %>">
+                            <input type="text" class="form-control visually-hidden" name="autoRoles" value="<%= role || 'null' %>">
+
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold" style="color: <%= autoRole ? autoRole.hexColor : 'grey' %>">
+                                    <% if ( autoRole ) { %>
+                                        <%= autoRole.name %>
+                                    <% } else { %>
+                                        Deleted Role
+                                    <% } %>
+                                </div>
+
+                                <%= role %>
+                            </div>
+
+                            <a class="badge bg-primary rounded-pill" role="button" id="deleteAutoRole-<%= role || 'null' %>">X</a>
+                        </li>
+                    <% } ); %>
+
+                    <li class="visually-hidden">
+                        <input type="text" class="form-control visually-hidden" name="autoRoles" value="placeholder">
+                        <input type="text" class="form-control visually-hidden" name="autoRoles" value="placeholder">
+                    </li>
+                </ol>
+                
+                <% if ( guild.config.autoRoles.length  <= 0 ) { %>
+                    None
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $( 'a' ).on( 'click', event => {
+        let elID = event.target.id;
+        if ( !elID.startsWith( 'deleteAutoRole' ) ) return;
+
+        $( `#autoRole-${ elID.split( '-' )[ 1 ] }` ).remove()
+    } );
+</script>

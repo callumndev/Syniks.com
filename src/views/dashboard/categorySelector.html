@@ -1,0 +1,12 @@
+<%
+    let categories = guild.channels.cache.filter( c => c.type == 'category' ),
+        guildCategory = guild.channels.cache.get( category );
+%>
+
+<select class="form-select" name="<%= locals.name %>">
+    <option value="null"<%= !category || !guildCategory ? ' selected': '' %>>Not Set</option>
+    
+    <% categories.forEach( chan => { %>
+        <%- include('./optionChannel.html', { targetChannel: guildCategory, channel: chan }) %>
+    <% } ); %>
+</select>

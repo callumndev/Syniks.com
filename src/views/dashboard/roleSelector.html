@@ -1,0 +1,11 @@
+<%
+    let roles = guild.roles.cache.filter( r => r != guild.roles.everyone && !guild.config.autoRoles.includes( r.id ) );
+%>
+
+<select class="form-select" name="<%= locals.name %>">
+    <option value="null" selected>Select a role</option>
+    
+    <% roles.forEach( role => { %>
+        <option value="<%= role.id %>"><%= role.name %></option>
+    <% } ); %>
+</select>

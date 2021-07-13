@@ -1,0 +1,111 @@
+<h2>Home</h2>
+
+<br>
+
+<%
+    let botCount = guild.members.cache.filter( m => m.user.bot ).size;
+    let props = [
+        {
+            name: 'ID',
+            value: guild.id
+        },
+        {
+            name: 'Member Count',
+            value: [ `${ guild.memberCount } Humans`, `${ botCount } Bots` ]
+        },
+        {
+            name: 'Joined At',
+            value: moment( new Date( guild.joinedAt ) ).fromNow()
+        },
+        {
+            name: 'Owner',
+            value: [ guild.owner.user.tag, guild.owner.user.id ]
+        },
+        {
+            name: 'Created At',
+            value: moment( new Date( guild.createdTimestamp ) ).fromNow()
+        },
+        {
+            name: 'Fetched At',
+            value: moment( new Date( user.fetchedAt ) ).fromNow()
+        }
+    ];
+%>
+
+<div class="container col-xxl-8 px-4">
+    <div class="row flex-lg-row-reverse align-items-center g-5 pb-5"> 
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold lh-1 mb-3">
+                <%= guild.name %>
+            </h1>
+
+            <p class="lead">
+                Welcome!
+                <br/>
+                <%= user.username %>
+                <span class="text-muted">
+                    #<%= user.discriminator %>
+                </span>
+            </p>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a class="btn btn-outline-secondary btn-lg px-4" data-bs-toggle="modal" data-bs-target="#detailsModal">Server Details</a>
+            </div>
+        </div>
+
+        <div class="col-10 col-sm-8 col-lg-6">
+            <img src="<%= guild.icon %>" class="d-block mx-lg-auto img-fluid"" style="border-radius: 100%;" alt="Guild icon" width="250" height="250" loading="lazy">
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">Server Details</h5>
+                    
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <p>ID: <code><%= guild.id %></code></p>
+                    <p>Name: <code><%= guild.name %></code></p>
+                    <p>Owner: <code><%= guild.owner.user.username %></code></p>
+
+                    <hr>
+                    
+                    <p>Members: <%= guild.memberCount %> (<%= botCount %> Bots)</p>
+                    <p>Fetched At: <%= moment( new Date( user.fetchedAt ) ).fromNow() %></p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <% props.forEach( prop => { %>
+        <div class="card" style="max-width: 18rem; margin: 2rem; min-width: 18rem; border: none;">            
+            <div class="card-body" style="text-align: center;">
+                <h5 class="card-title"><%= prop.name %></h5>
+
+                <p class="card-text">
+                    <hr>
+                    <% if ( typeof prop.value == 'object' ) { %>
+                        <%
+                            prop.value.forEach( value => {
+                        %>
+                            <%= value %>
+                            <br>
+                        <% } ); %>
+                    <% } else { %>
+                        <%= prop.value %>
+                    <% } %>
+                </p>
+            </div>
+        </div>
+    <% } ); %>
+</div>

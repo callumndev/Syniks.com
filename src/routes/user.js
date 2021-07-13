@@ -1,10 +1,9 @@
 const user = syniks.router();
 
 user.get( '/profile', syniks.util.auth.check, ( req, res ) => {
-    let { Permissions } = require( 'discord.js' ),
-    moment = require( 'moment' );
+    let { Permissions } = require( 'discord.js' );
 
-    syniks.util.render( req, res, 'profile', { permissions: Permissions, moment } );
+    syniks.util.render( req, res, 'profile', { permissions: Permissions } );
 } );
 
 

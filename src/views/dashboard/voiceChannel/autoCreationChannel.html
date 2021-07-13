@@ -1,0 +1,41 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Auto Creation Channel</h5>
+            <p class="card-text">The channel to join for a Voice Channel to be auto created</p>
+
+            <br>
+            
+            <%- include('../voiceChannelSelector.html', { channel: guild.config.autoVC_Channel, name: 'autoVC_Channel' }) %>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Auto Creation Channel</h5>
+            <p class="card-text">Information about the current VC Auto Creation channel</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+                <%
+                    let autoVC_Channel = guild.channels.cache.get( guild.config.autoVC_Channel );
+                %>
+                
+                <% if ( autoVC_Channel ) { %>
+                    <% if ( autoVC_Channel.parent ) { %>
+                        <%- include('../discordChannel.html', { name: autoVC_Channel.parent.name, category: true }) %>
+                    <% } %>
+
+                    <div class="<%= autoVC_Channel.parent ? 'ms-4 mt-1' : '' %>">
+                        <%- include('../discordChannel.html', { name: autoVC_Channel.name }) %>
+                    </div>
+                <% } else if ( !guild.config.autoVC_Channel ) { %>
+                    Not Set
+                <% } else if ( !autoVC_Channel ) { %>
+                    Deleted Channel
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

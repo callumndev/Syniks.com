@@ -1,0 +1,35 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Auto Creation Category</h5>
+            <p class="card-text">The category that Voice Channels will be auto created under when someone joins the Auto Creation channel</p>
+
+            <br>
+            
+            <%- include('../categorySelector.html', { category: guild.config.autoVC_Category, name: 'autoVC_Category' }) %>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Auto Creation Category</h5>
+            <p class="card-text">Information about the current VC Auto Creation category</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+                <%
+                    let autoVC_Category = guild.channels.cache.get( guild.config.autoVC_Category );
+                %>
+                
+                <% if ( autoVC_Category ) { %>
+                    <%- include('../discordChannel.html', { name: autoVC_Category.name, category: true }) %>
+                <% } else if ( !guild.config.autoVC_Category ) { %>
+                    Not Set
+                <% } else if ( !autoVC_Category ) { %>
+                    Deleted Category
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

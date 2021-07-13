@@ -1,0 +1,41 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Event Log Channel</h5>
+            <p class="card-text">The channel to send event logs to</p>
+
+            <br>
+            
+            <%- include('../channelSelector.html', { channel: guild.config.eventLogChannel, name: 'eventLogChannel' }) %>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Event Log</h5>
+            <p class="card-text">Information about the current event log channel</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+                <%
+                    let eventLogChannel = guild.channels.cache.get( guild.config.eventLogChannel );
+                %>
+                
+                <% if ( eventLogChannel ) { %>
+                    <% if ( eventLogChannel.parent ) { %>
+                        <%- include('../discordChannel.html', { name: eventLogChannel.parent.name, category: true }) %>
+                    <% } %>
+
+                    <div class="<%= eventLogChannel.parent ? 'ms-4 mt-1' : '' %>">
+                        <%- include('../discordChannel.html', { name: eventLogChannel.name }) %>
+                    </div>
+                <% } else if ( !guild.config.eventLogChannel ) { %>
+                    Not Set
+                <% } else if ( !eventLogChannel ) { %>
+                    Deleted Channel
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
