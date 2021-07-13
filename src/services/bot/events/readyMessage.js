@@ -19,14 +19,17 @@ module.exports = async bot => {
         `[Syniks - Bot] ${ bot.user.tag } is online`,
         [
             'Bot:',
-            `${ bot.guilds.cache.size } guilds`,
+            `${ syniks.services.server.count() } guilds`,
             `${ bot.users.cache.size } users`
         ],
         [
             'DataBase:',
-            `${ ( await syniks.db.config.findAll() ).length } configs`
-        ]
+            `${ await syniks.services.config.count() } configs`
+        ],
+        ''
     ] );
+
+    bot.emit( 'readyForApp' );
 };
 
 
