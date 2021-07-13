@@ -33,7 +33,6 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
-    "mysql2": "^2.2.5",
     "on-headers": "^1.0.2",
     "passport": "^0.4.1",
     "passport-discord": "^0.1.4",
