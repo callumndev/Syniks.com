@@ -35,13 +35,16 @@ syniks.db = new Sequelize( syniks.settings.db.database, syniks.settings.db.usern
     host: syniks.settings.db.host,
     port: syniks.settings.db.port,
     dialect: syniks.settings.db.dialect,
-    logging: false
+    logging: syniks.settings.db.logging,
+    define: {
+        freezeTableName: syniks.settings.db.freezeTableName
+    }
 } );
 
 syniks.db.DataTypes = DataTypes;
 syniks.db.sequelize = require( 'sequelize' );
 
-for (const [ name, model ] of  Object.entries( syniks.util.requireDirFiles( path.join( __dirname, 'models' ) ) ) ) {
+for (const [ name, model ] of Object.entries( syniks.util.requireDirFiles( path.join( __dirname, 'models' ) ) ) ) {
     syniks.db[ name ] = model
 
     syniks.db[ name ].sync();
@@ -72,17 +75,20 @@ syniks.app.set( 'views', path.join( __dirname, 'views' ) );
 syniks.app.use( express.static( path.join( __dirname, 'public' ) ) );
 
 syniks.app.use( bodyParser.json() );
+syniks.app.use( bodyParser.urlencoded( {
+    extended: true
+} ) );
 syniks.app.set( 'etag', false );
 syniks.app.disable( 'view cache' );
-syniks.app.set('view engine', 'html');
+syniks.app.set( 'view engine', 'html' );
 
 
 if ( syniks.NODE_ENV == 'development' ) {
-    syniks.app.use( morgan('tiny', {
+    syniks.app.use( morgan( 'tiny', {
         skip: ( req, res ) => res.statusCode > 400
     } ) );
 
-    syniks.app.use( morgan('combined', {
+    syniks.app.use( morgan( 'combined', {
         skip: ( req, res ) => res.statusCode <= 400
     } ) );
 };
@@ -112,7 +118,7 @@ syniks.passport.use( new Strategy( syniks.settings.auth, ( accessToken, refreshT
         let iconURL =  guild.icon ? `https://cdn.discordapp.com/icons/${ guild.id }/${ guild.icon }` : 'https://discord.com/assets/f9bb9c4af2b9c32a2c5ee0014661546d.png';
         guild.icon = `${ iconURL }?size=4096`;
         guild.iconSmall = `${ iconURL }?size=256`;
-        guild.inviteURL = `${ syniks.settings.botInvite }&guild_id=${ guild.id }&redirect_uri=${ syniks.settings.siteURL }/invited?redirect=${ encodeURIComponent( '/profile' ) }`;
+        guild.inviteURL = `${ syniks.settings.botInvite }&guild_id=${ guild.id }&redirect_uri=${ encodeURIComponent( `${ syniks.settings.siteURL }/invited?redirect=/profile`) }`;
 
         delete guild.icon_hash;
         delete guild.splash;
@@ -172,8 +178,8 @@ syniks.app.use( session( {
     saveUninitialized: false
 } ) );
 
-syniks.app.use(syniks.passport.initialize());
-syniks.app.use(syniks.passport.session());
+syniks.app.use( syniks.passport.initialize() );
+syniks.app.use( syniks.passport.session() );
 
 
 // Routes
@@ -225,6 +231,8 @@ syniks.app.use( ( req, res, next ) => {
 syniks.app.use( ( err, req, res, next ) => {
     res.status( err.status || 500 );
 
+    console.log( '500 Error:', err );
+
     let error = err.message.split( '\n\n' );
     error = {
         ...err,
@@ -236,4 +244,8 @@ syniks.app.use( ( err, req, res, next ) => {
 
 
 // Listen
-syniks.app.listen( syniks.port, () => console.log(`[Syniks] Ready on port ${ syniks.port }` ) );
+if ( syniks.services.discord.bot ) {
+    syniks.services.discord.bot.on( 'readyForApp', () => syniks.app.listen( syniks.port, () => console.log(`[Syniks] Ready on port ${ syniks.port }` ) ) );
+} else {
+    syniks.app.listen( syniks.port, () => console.log(`[Syniks] Ready on port ${ syniks.port }` ) );
+};
