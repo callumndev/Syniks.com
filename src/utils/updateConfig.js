@@ -1,4 +1,17 @@
-const isImageURL = require( 'is-image-url' );
+const isImageURL = require( 'is-image-url' ),
+    { MessageEmbed } = require( 'discord.js' );
+
+function validURL( str ) {
+    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    
+    return !!pattern.test( str );
+};
+
 
 module.exports = async ( guild, body = {} ) => {
     let alerts = [],
@@ -63,6 +76,25 @@ module.exports = async ( guild, body = {} ) => {
         };
     };
 
+    // disabledEvents:     { type: syniks.db.DataTypes.JSON, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.disabledEvents },
+    for (const [ key, value ] of Object.entries( body ) ) {
+        let eventRegEx = /\bevent(.*?)Enabled\b/;
+        if ( eventRegEx.test( key ) && value && typeof value == 'string' ) {
+            let eventName = eventRegEx.exec( key )[ 1 ];
+            if ( !eventName || !syniks.settings.events.includes( eventName ) || ( value != 'true' && value != 'false' ) ) {
+                alerts.push( 'Invite event log' );
+            } else {
+                if ( value == 'true' ) {
+                    guild.config.disabledEvents = guild.config.disabledEvents.filter( event => event.toLowerCase() != eventName.toLowerCase() );
+                } else {
+                    if ( !guild.config.disabledEvents.includes( eventName ) ) {
+                        guild.config.disabledEvents.push( eventName );
+                    };
+                };
+            };
+        };
+    };
+
 
     // // VC
     // autoVC_Category:    syniks.db.DataTypes.STRING,
@@ -114,11 +146,171 @@ module.exports = async ( guild, body = {} ) => {
         };
     };
 
+    // // Levelling
+    // levelMessageChannel: syniks.db.DataTypes.STRING
+    if ( body.levelMessageChannel && didChange( 'levelMessageChannel' ) && typeof body.levelMessageChannel == 'string' ) {
+        if ( !guild.channels.cache.has( body.levelMessageChannel ) && body.levelMessageChannel != 'null' ) {
+            alerts.push( 'Invalid level message channel ID provided' );
+        } else if ( guild.channels.cache.get( body.levelMessageChannel ) && guild.channels.cache.get( body.levelMessageChannel ).type == 'text' || body.levelMessageChannel == 'null' ) {
+            guild.config.levelMessageChannel = body.levelMessageChannel == 'null' ? null : body.levelMessageChannel;
+        };
+    };
+
 
     // Update Config
     await syniks.services.config.set( guild.id, guild.config );
 
 
+    // Message Embedder
+    if ( body.embedChannel && typeof body.embedChannel == 'string' ) {
+        if ( !guild.channels.cache.has( body.embedChannel ) ) {
+            alerts.push( 'Invalid embed channel provided' );
+        } else if ( guild.channels.cache.get( body.embedChannel ) && guild.channels.cache.get( body.embedChannel ).type == 'text' ) {
+            let embedChannel = guild.channels.cache.get( body.embedChannel ),
+                embed = new MessageEmbed();
+
+            if ( body.title != undefined && typeof body.title == 'string' ) {
+                if ( !body.title ) {
+                    alerts.push( 'Embed title must not be invalid' );
+                } else if ( body.title.length > 256 ) {
+                    alerts.push( 'Embed title cannot be longer than 256 characters' );
+                } else {
+                    try {
+                        embed.setTitle( body.title );
+                    } catch ( e ) {
+                        alerts.push( e.message );
+                    };
+                };
+            };
+            
+            if ( body.description && typeof body.description == 'string' ) {
+                if ( body.description.length > 4096 ) {
+                    alerts.push( 'Embed description cannot be longer than 4096 characters' );
+                } else {
+                    try {
+                        embed.setDescription( body.description );
+                    } catch ( e ) {
+                        alerts.push( e.message );
+                    };
+                };
+            };
+
+            if ( body.url && typeof body.url == 'string' ) {
+                if ( !validURL( body.url ) ) {
+                    alerts.push( 'Embed URL needs to be a valid URL' );
+                } else {
+                    try {
+                        embed.setURL( body.url );
+                    } catch ( e ) {
+                        alerts.push( e.message );
+                    };
+                };
+            };
+
+            if ( body.color && typeof body.color == 'string' ) {
+                if ( !body.color.startsWith( '#' ) ) {
+                    alerts.push( 'Embed color needs to be a valid color' );
+                } else {
+                    try {
+                        embed.setColor( body.color );
+                    } catch ( e ) {
+                        alerts.push( e.message );
+                    };
+                };
+            };
+
+            if ( body.icon && typeof body.icon == 'string' ) {
+                if ( !isImageURL( body.icon ) ) {
+                    alerts.push( 'Embed icon needs to be a valid image URL' );
+                } else {
+                    try {
+                        embed.setThumbnail( body.icon );
+                    } catch ( e ) {
+                        alerts.push( e.message );
+                    };
+                };
+            };
+
+            let author = {};
+
+            if ( body.author_name && typeof body.author_name == 'string' ) {
+                if ( body.author_name.length > 256 ) {
+                    alerts.push( 'Embed author name cannot be longer than 256 characters' );
+                } else {
+                    author.name = body.author_name;
+                };
+            };
+
+            if ( body.author_icon && typeof body.author_icon == 'string' ) {
+                if ( !isImageURL( body.author_icon ) ) {
+                    alerts.push( 'Embed author icon needs to be a valid URL' );
+                } else {
+                    author.icon = body.author_icon;
+                };
+            };
+
+            if ( body.author_url && typeof body.author_url == 'string' ) {
+                if ( !validURL( body.author_url ) ) {
+                    alerts.push( 'Embed author URL needs to be a valid URL' );
+                } else {
+                    author.url = body.author_url;
+                };
+            };
+
+            try {
+                embed.author = embed.author || {};
+
+                if ( author.name ) {
+                    embed.author.name = author.name;
+                };
+                
+                if ( author.icon ) {
+                    embed.author.iconURL = author.icon;
+                };
+
+                if ( author.url ) {
+                    embed.author.url = author.url;
+                };
+            } catch ( e ) {
+                alerts.push( e.message );
+            };
+
+            if ( body.footer && typeof body.footer == 'string' ) {
+                if ( body.footer.length > 2048 ) {
+                    alerts.push( 'Embed footer cannot be longer than 2048 characters' );
+                } else {
+                    try {
+                        embed.setFooter( body.footer );                        
+                    } catch ( e ) {
+                        alerts.push( e.message );
+                    };
+                };
+            };
+
+            let fields = Object.keys( body ).filter( k => k.startsWith( 'field-' ) );
+            for ( let i = 0; i < fields.length; i++ ) {
+                let fieldName = body[ `field-${ i }-name` ],
+                    fieldValue = body[ `field-${ i }-value` ],
+                    fieldInline = body[ `field-${ i }-inline` ];
+
+                if ( fieldName && fieldValue ) {
+                    try {
+                        embed.addField( fieldName, fieldValue, fieldInline == 'on' );
+                    } catch ( e ) {
+                        alerts.push( e.message );
+                    }
+                };
+            };
+
+            try {
+                embedChannel.send( embed );
+            } catch ( e ) {
+                alerts.push( e.message );
+            }
+        };
+    };
+    
+    
     // Return alerts & new config
     return {
         config: await syniks.services.config.get( guild.id ),

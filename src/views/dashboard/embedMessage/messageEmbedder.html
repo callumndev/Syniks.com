@@ -1,0 +1,429 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Embed Builder</h5>
+            <p class="card-text">Build an embed to send to a channel</p>
+
+            <br>
+
+            <div class="form-group">
+                <label>Channel</label>
+                <%- include('../channelSelector.html', { name: 'embedChannel' }) %>
+            </div>
+
+            <hr>
+            
+            <div class="form-group">
+                <label>Main</label>
+                <input class="form-control" id="title" name="title" type="text" placeholder="Title"/>
+            </div>
+    
+            <div class="form-group">
+                <input class="form-control" id="description" name="description" type="text" placeholder="Description"/>
+            </div>
+            
+            <div class="form-group">
+                <input class="form-control" id="url" name="url" type="text" placeholder="URL"/>
+            </div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Color</label>
+                <input class="form-control form-control-color" id="color" name="color" type="color"/>
+            </div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Thumbnail</label>
+                <input class="form-control" id="icon" name="icon" type="text" placeholder="Icon"/>
+            </div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Author</label>
+                <input class="form-control" id="author_name" name="author_name" type="text" placeholder="Author Name"/>
+            </div>
+    
+            <div class="form-group">
+                <input class="form-control" id="author_url" name="author_url" type="text" placeholder="Author Link"/>
+            </div>
+    
+            <div class="form-group">
+                <input class="form-control" id="author_icon" name="author_icon" type="text" placeholder="Author Icon"/>
+            </div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Fields</label>
+            </div>
+    
+            <div class="input-fields"></div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Footer</label>
+                <input class="form-control" id="footer" name="footer" type="text" placeholder="Footer Text"/>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body preview">
+            <h5 class="card-title">Embed Preview</h5>
+            <p class="card-text">Preview of the embed that will be sent</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+            </div>
+            <div class="wrapper">
+                <div class="side-colored"></div>
+                <div class="card embed">
+                    <div class="card-body">
+                        <div class="embed-inner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+$( document ).ready( () => {
+    let switches = { title: false, url: false, icon: false },
+        fields = 1,
+        embed = {
+            title: 'Embed title (required)',
+            author: { name: '', url: '', icon: '' },
+            description: '',
+            url: '',
+            thumb_url: '',
+            color: '',
+            fields: [ {} ],
+            footer: ''
+        };
+        
+    function resetEmbed() {
+        $( '.embed-inner' ).html( '' );
+        $( '.embed-footer' ).remove();
+        $( '.embed-thumb' ).remove();
+    };
+    
+    function updateEmbed( embed ) {
+        resetEmbed();
+        
+        if ( embed.url ) {
+            $( '.embed-inner' ).append( `<div class="embed-title"><a href="${ embed.url }">${ embed.title }</a></div>` );
+        } else {
+            $( '.embed-inner' ).append( `<div class="embed-title">${ embed.title }</div>` );
+        };
+        
+        if ( embed.description ) {
+            $( '.embed-inner' ).append( `<div class="embed-description">${ embed.description }</div>` );
+        };
+        
+        if ( embed.color ) {
+            $( '.side-colored' ).css( 'background-color', embed.color );
+        };
+        
+        if ( embed.author.name ) {
+            $( '.embed-title' ).before( `<div class="embed-author"><a class="embed-author-name" href="${ embed.author.url }">${ embed.author.name }</a></div>` );
+            
+            if ( embed.author.icon ) {
+                $( '.embed-author-name' ).before( `<img class="embed-author-icon" src="${ embed.author.icon }" />` );
+            };
+        };
+        
+        if ( embed.thumb_url ) {
+            $( '.card.embed .card-body' ).append( `<img class="embed-thumb" src="${ embed.thumb_url }" />` );
+            $( '.embed-thumb' ).height( $( '.embed-thumb' )[ 0 ].naturalHeight );
+        };
+        
+        if ( embed.fields.length > 0 ) {
+            $( '.embed-inner' ).append( `<div class="fields"></div>` );
+        };
+        
+        for ( let field of embed.fields ) {
+            $( '.embed-inner .fields' ).append( `
+                <div class="field ${ field.inline && 'inline' }">
+                    <div class="field-name">${ field.name }</div>
+                    <div class="field-value">${ field.value }</div>
+                </div>
+            `);
+        };
+        
+        if ( embed.footer ) {
+            $( '.card.embed' ).append( `<div class="embed-footer"><span>${ embed.footer }</span></div>` );
+        };
+    };
+    
+    updateEmbed( embed );
+    
+    function generateInputFields( fields ) {
+        $( '.input-fields' ).html( '' );
+        
+        for ( let i = 0; i < fields; i++ ) {
+            $( '.input-fields' ).append( `
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <input class="form-control" id="field-${ i }-name" name="field-${ i }-name" type="text" placeholder="Name" value="${ embed.fields[ i ].name !== undefined ? embed.fields[ i ].name : '' }" />
+                    </div>
+                
+                    <div class="col-sm-4">
+                        <input class="form-control" id="field-${ i }-value" name="field-${ i }-value" type="text" placeholder="Value" value="${ embed.fields[ i ].value !== undefined ? embed.fields[ i ].value : '' }" />
+                    </div>
+                
+                    <div class="col-sm-2">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" id="field-${ i }-inline" name="field-${ i }-inline" type="checkbox" ${ embed.fields[ i ].inline !== undefined ? 'checked="checked"' : '' }> Inline
+                            </label>
+                        </div>
+                    </div>
+                
+                    <div class="col-sm-2">
+                        <button id="field-${ i }-delete" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            ` );
+            
+            $( `#field-${ i }-name` ).keyup( () => {
+                updateFieldName( i, $( `#field-${ i }-name` ).val() );
+            } );
+            
+            $( `#field-${ i }-value` ).keyup( () => {
+                updateFieldValue( i, $( `#field-${ i }-value` ).val() );
+            } );
+            
+            $( `#field-${ i }-inline` ).click( () => {
+                updateFieldInline( i, $( `#field-${ i }-inline` ).is( ':checked' ) );
+            } );
+            
+            $( `#field-${ i }-delete` ).click( e => {
+                e.preventDefault();
+                
+                deleteField( i );
+            } );
+        };
+        
+        $( '.input-fields' ).append( `<button id="add-field" class="btn btn-success">Add Field</button>` );
+        
+        $( '#add-field' ).click( e => {
+            e.preventDefault();
+            
+            addField();
+        } );
+    };
+    
+    generateInputFields( fields );
+    
+    function updateFieldName( index, value ) {
+        embed.fields[ index ].name = value;
+        
+        updateEmbed( embed );
+    };
+    
+    function updateFieldValue( index, value ) {
+        embed.fields[ index ].value = value;
+        
+        updateEmbed( embed );
+    };
+    
+    function updateFieldInline( index, value ) {
+        embed.fields[ index ].inline = value;
+        
+        updateEmbed( embed );
+    };
+    
+    function deleteField( index ) {
+        embed.fields.splice( index, 1 );
+        
+        updateEmbed( embed );
+        
+        fields -= 1;
+        
+        generateInputFields( fields );
+    };
+    
+    function addField() {
+        embed.fields.push( { inline: true } );
+        
+        fields += 1;
+        
+        generateInputFields( fields );
+    };
+    
+    function updateTitle( value ) {
+        embed.title = value || '';
+        
+        updateEmbed( embed );
+    };
+    
+    function updateUrl( value ) {
+        embed.url = value || '';
+        
+        updateEmbed( embed );
+    };
+    
+    function updateThumb( value ) {
+        embed.thumb_url = value || false;
+        
+        updateEmbed( embed );
+    };
+    
+    function updateDescription( value ) {
+        embed.description = value || '';
+        
+        updateEmbed( embed );
+    };
+    
+    function updateColor( value ) {
+        embed.color = value || false;
+        
+        updateEmbed( embed );
+    };
+    
+    function updateAuthorName( value ) {
+        embed.author.name = value || '';
+        
+        updateEmbed( embed );
+    };
+    
+    function updateAuthorUrl( value ) {
+        embed.author.url = value || '';
+        
+        updateEmbed( embed );
+    };
+    
+    function updateAuthorIcon( value ) {
+        embed.author.icon = value || '';
+        
+        updateEmbed( embed );
+    };
+    
+    function updateFooter( value ) {
+        embed.footer = value || '';
+        
+        updateEmbed( embed );
+    };
+    
+    function addWarning( item, type, message ) {
+        item.addClass( 'is-invalid' );
+        item.removeClass( 'is-valid' );
+        
+        if ( $( `#${ type }-feedback` ).length === 0 ) {
+            item.after( `<div class="form-control-feedback text-warning" id="${ type }-feedback">${ message }</div>` );
+        };
+    };
+    
+    function addSuccess( item, type ) {
+        item.removeClass( 'is-invalid' );
+        
+        item.addClass( 'is-valid' );
+        
+        $( `#${ type }-feedback` ).remove();
+    };
+    
+    $( '#title' ).keyup( () => {
+        let item = $( '#title' );
+        let title = item.val();
+        
+        if ( title.length === 0 ) {
+            addWarning( item, 'title', 'Title cannot be empty' );
+        } else {
+            addSuccess( item, 'title' );
+            
+            updateTitle( title );
+        };
+    } );
+    
+    $( '#url' ).keyup( () => {
+        let item = $( '#url' );
+        let url = item.val();
+        
+        if ( url.substr( 0, 4 ) !== 'http' && url.length !== 0 ) {
+            addWarning( item, 'url', 'Not a valid URL' );
+        } else {
+            addSuccess( item, 'url' );
+            
+            updateUrl( url );
+        };
+    } );
+    
+    $( '#icon' ).keyup( () => {
+        let item = $( '#icon' );
+        let icon = item.val();
+        
+        if ( icon.substr( 0, 4 ) !== 'http' && icon.length !== 0 ) {
+            addWarning( item, 'icon', 'Not a valid URL' );
+        } else {
+            addSuccess( item, 'icon' );
+            
+            updateThumb( icon );
+        };
+    } );
+    
+    $( '#description' ).keyup( () => {
+        let item = $( '#description' );
+        let description = item.val();
+        
+        addSuccess( item, 'description' );
+        
+        updateDescription( description );
+    } );
+    
+    $( '#color' ).change( () => {
+        updateColor( $( '#color' ).val() );
+    } );
+    
+    $( '#author_name' ).keyup( () => {
+        let item = $( '#author_name' );
+        let author_name = item.val();
+        
+        addSuccess( item, 'author_name' );
+        
+        updateAuthorName( author_name );
+    } );
+    
+    $( '#author_url' ).keyup( () => {
+        let item = $( '#author_url' );
+        let author_url = item.val();
+        
+        if ( author_url.substr( 0, 4 ) !== 'http' && author_url.length !== 0 ) {
+            addWarning( item, 'author_url', 'Not a valid URL' );
+        } else {
+            addSuccess( item, 'author_url' );
+            
+            updateAuthorUrl( author_url );
+        };
+    } );
+    
+    $( '#author_icon' ).keyup( () => {
+        let item = $( '#author_icon' );
+        let author_icon = item.val();
+        
+        if ( author_icon.substr( 0, 4 ) !== 'http' && author_icon.length !== 0 ) {
+            addWarning( item, 'author_icon', 'Not a valid URL' );
+        } else {
+            addSuccess( item, 'author_icon' );
+            
+            updateAuthorIcon( author_icon );
+        };
+    } );
+    
+    $( '#footer' ).keyup( () => {
+        let item = $( '#footer' );
+        let footer = item.val();
+        
+        addSuccess( item, 'footer' );
+        
+        updateFooter( footer );
+    } );
+} );
+</script>
