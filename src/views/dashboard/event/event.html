@@ -1,0 +1,29 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title"><%= name %></h5>
+            <p class="card-text">Weather or not to enable logging of events related to <%= name %></p>
+
+            <br>
+
+            <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+                <label class="switch">
+                    <input id="<%= event %>TogglePlaceholder" name="event<%= event %>Enabled" value="false" type="hidden"<%= !guild.config.disabledEvents.includes(event) ? ' disabled' : '' %>>
+
+                    <input id="<%= event %>Toggle" name="event<%= event %>Enabled" value="<%= !guild.config.disabledEvents.includes(event) %>" type="checkbox"<%= !guild.config.disabledEvents.includes(event) ? ' checked' : '' %>>
+                    
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#<%= event %>Toggle').on( 'change', () => {
+        
+        $('#<%= event %>Toggle').attr( 'value', $('#<%= event %>Toggle').prop( 'checked' ) );
+        
+        $( '#<%= event %>TogglePlaceholder' ).prop( 'disabled', $('#<%= event %>Toggle').val() == 'true' );
+    } );
+</script>

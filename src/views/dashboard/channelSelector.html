@@ -1,11 +1,11 @@
 <%
     let channelsWithoutParents = guild.channels.cache.filter( c => !c.parent && c.type == 'text' ),
         categories = guild.channels.cache.filter( c => c.type == 'category' ),
-        guildChannel = guild.channels.cache.get( channel );
+        guildChannel = guild.channels.cache.get( locals.channel );
 %>
 
 <select class="form-select" name="<%= locals.name %>">
-    <option value="null"<%= !channel || !guildChannel ? ' selected': '' %>>Not Set</option>
+    <option value="null"<%= !locals.channel || !guildChannel ? ' selected': '' %>>Not Set</option>
     
     <% channelsWithoutParents.forEach( chan => { %>
         <%- include('./optionChannel.html', { targetChannel: guildChannel, channel: chan }) %>
