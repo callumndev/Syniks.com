@@ -1,0 +1,41 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Level Message Destination</h5>
+            <p class="card-text">The channel to send the level message to</p>
+
+            <br>
+            
+            <%- include('../channelSelector.html', { channel: guild.config.levelMessageChannel, name: 'levelMessageChannel' }) %>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Level Message Destination</h5>
+            <p class="card-text">Information about the current Level Message Destination channel</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+                <%
+                    let levelMessageChannel = guild.channels.cache.get( guild.config.levelMessageChannel );
+                %>
+                
+                <% if ( levelMessageChannel ) { %>
+                    <% if ( levelMessageChannel.parent ) { %>
+                        <%- include('../discordChannel.html', { name: levelMessageChannel.parent.name, category: true }) %>
+                    <% } %>
+
+                    <div class="<%= levelMessageChannel.parent ? 'ms-4 mt-1' : '' %>">
+                        <%- include('../discordChannel.html', { name: levelMessageChannel.name }) %>
+                    </div>
+                <% } else if ( !guild.config.levelMessageChannel ) { %>
+                    Not Set
+                <% } else if ( !levelMessageChannel ) { %>
+                    Deleted Channel
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
