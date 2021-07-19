@@ -6,6 +6,9 @@ global.syniks = {
 };
 
 
+process.on( 'unhandledRejection', err => console.log( '[unhandledRejection err]: ', err ) );
+
+
 
 
 // Modules
