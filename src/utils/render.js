@@ -9,6 +9,8 @@ module.exports = ( req, res, template, data = {} ) => {
         url: req.url,
 
         moment: require( 'moment' ),
+
+        events: syniks.settings.events,
         
         ...data
     };
