@@ -6,23 +6,27 @@ module.exports = syniks.db.define( 'config', {
     },
 
     // General
-    prefix:             { type: syniks.db.DataTypes.STRING, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.prefix },
-    suggestionChannel:  syniks.db.DataTypes.STRING,
-    autoRoles:          { type: syniks.db.DataTypes.JSON, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.autoRoles },
-    mutedRole:          syniks.db.DataTypes.STRING,
+    prefix:              { type: syniks.db.DataTypes.STRING, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.prefix },
+    suggestionChannel:   syniks.db.DataTypes.STRING,
+    autoRoles:           { type: syniks.db.DataTypes.JSON, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.autoRoles },
+    mutedRole:           syniks.db.DataTypes.STRING,
 
     // Logs
-    modLogChannel:      syniks.db.DataTypes.STRING,
-    eventLogChannel:    syniks.db.DataTypes.STRING,
+    modLogChannel:       syniks.db.DataTypes.STRING,
+    eventLogChannel:     syniks.db.DataTypes.STRING,
+    disabledEvents:      { type: syniks.db.DataTypes.JSON, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.disabledEvents },
 
     // VC
-    autoVC_Category:    syniks.db.DataTypes.STRING,
-    autoVC_Channel:     syniks.db.DataTypes.STRING,
+    autoVC_Category:     syniks.db.DataTypes.STRING,
+    autoVC_Channel:      syniks.db.DataTypes.STRING,
 
     // Invites
-    inviteChannel:      syniks.db.DataTypes.STRING,
-    inviteImage:        syniks.db.DataTypes.STRING,
+    inviteChannel:       syniks.db.DataTypes.STRING,
+    inviteImage:         syniks.db.DataTypes.STRING,
 
     // Server Stats
-    serverStatsEnabled: { type: syniks.db.DataTypes.BOOLEAN, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.serverStatsEnabled }
+    serverStatsEnabled:  { type: syniks.db.DataTypes.BOOLEAN, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.serverStatsEnabled },
+
+    // Levelling
+    levelMessageChannel: syniks.db.DataTypes.STRING
 } );
