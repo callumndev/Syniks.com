@@ -83,11 +83,7 @@
             $( this ).attr( 'clicked', true );
         };
 
-        $( id ).append(
-            '<div class="spinner-border spinner-border-sm ms-2" role="status">\
-                <span class="visually-hidden">Loading...</span>\
-            </div>'
-        );
+        $( id ).append( '<div class="spinner-border spinner-border-sm ms-2" role="status"></div>' );
 
         setTimeout( () => $( location ).attr( 'href', $( id ).attr('href') ), redirectIn * 1000 );
     } );
