@@ -62,7 +62,7 @@ dashboard.post( '/:guildID', syniks.util.auth.check, async ( req, res ) => {
     
 
     // Render
-    syniks.util.render( req, res, 'dashboard.html', { guild, alerts } )
+    return res.status( 200 ).send( alerts );
 } );
 
 
