@@ -4,7 +4,7 @@
         guildChannel = guild.channels.cache.get( locals.channel );
 %>
 
-<select class="form-select" name="<%= locals.name %>">
+<select class="form-select" name="<%= locals.name %>" id="<%= locals.id %>">
     <option value="null"<%= !locals.channel || !guildChannel ? ' selected': '' %>>Not Set</option>
     
     <% channelsWithoutParents.forEach( chan => { %>

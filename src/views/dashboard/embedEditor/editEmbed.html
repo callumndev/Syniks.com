@@ -1,0 +1,513 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Message Fetcher</h5>
+            <p class="card-text">The message ID to fetch the embed of</p>
+
+            <br>
+
+            <div class="form-group">
+                <label>Channel</label>
+                <%- include('../channelSelector.html', { id: 'messageFetchChannel', name: 'messageFetchChannel' }) %>
+
+                <label>Message ID</label>
+                <input type="text" class="form-control" id="messageFetchID" name="messageFetchID" placeholder="Message ID">
+                
+                <br>
+
+                <button class="btn btn-primary" id="messageFetchIDBtn">Fetch</button>
+            </div>
+        </div>
+
+        <br>
+        <hr>
+        <br>
+
+        <div class="card-body">
+            <h5 class="card-title">Embed Editor</h5>
+            <p class="card-text">Edit the fetched embed</p>
+
+            <br>
+            
+            <div class="form-group">
+                <label>Main</label>
+                <input class="form-control" id="editTitle" name="editTitle" type="text" placeholder="Title"/>
+            </div>
+    
+            <div class="form-group">
+                <textarea class="form-control" id="editDescription" name="editDescription" type="text" placeholder="Description"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <input class="form-control" id="editUrl" name="editUrl" type="text" placeholder="URL"/>
+            </div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Color</label>
+                <input class="form-control form-control-color" id="editColor" name="editColor" type="color"/>
+            </div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Thumbnail</label>
+                <input class="form-control" id="editIcon" name="editIcon" type="text" placeholder="Icon"/>
+            </div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Author</label>
+                <input class="form-control" id="edit_author_name" name="edit_author_name" type="text" placeholder="Author Name"/>
+            </div>
+    
+            <div class="form-group">
+                <input class="form-control" id="edit_author_url" name="edit_author_url" type="text" placeholder="Author Link"/>
+            </div>
+    
+            <div class="form-group">
+                <input class="form-control" id="edit_author_icon" name="edit_author_icon" type="text" placeholder="Author Icon"/>
+            </div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Fields</label>
+            </div>
+    
+            <div class="input-fields-edit"></div>
+    
+            <!----><hr>
+    
+            <div class="form-group">
+                <label>Footer</label>
+                <input class="form-control" id="editFooter" name="editFooter" type="text" placeholder="Footer Text"/>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body preview">
+            <h5 class="card-title">Embed Preview</h5>
+            <p class="card-text">Preview of the embed that will be sent</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+            </div>
+            <div class="wrapper">
+                <div class="side-colored-edit"></div>
+                <div class="card embed-edit">
+                    <div class="card-body">
+                        <div class="embed-inner-edit"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+$( document ).ready( () => {
+    let _fields = 0,
+        _embed = {
+            title: 'Embed title (required)',
+            author: { name: '', url: '', icon: '' },
+            description: '',
+            url: '',
+            thumb_url: '',
+            color: '',
+            fields: [],
+            footer: ''
+        };
+        
+    function resetEmbed() {
+        $( '.embed-inner-edit' ).html( '' );
+        $( '.embed-footer-edit' ).remove();
+        $( '.embed-thumb-edit' ).remove();
+    };
+    
+    function updateEmbed( _embed ) {
+        resetEmbed();
+        
+        if ( _embed.url ) {
+            $( '.embed-inner-edit' ).append( `<div class="embed-title-edit"><a href="${ _embed.url }">${ _embed.title }</a></div>` );
+        } else {
+            $( '.embed-inner-edit' ).append( `<div class="embed-title-edit">${ _embed.title }</div>` );
+        };
+        
+        if ( _embed.description ) {
+            $( '.embed-inner-edit' ).append( `<div class="embed-description-edit">${ _embed.description }</div>` );
+        };
+        
+        if ( _embed.color ) {
+            $( '.side-colored-edit' ).css( 'background-color', _embed.color );
+        };
+        
+        if ( _embed.author.name ) {
+            $( '.embed-title-edit' ).before( `<div class="embed-author-edit"><a class="embed-author-name-edit" href="${ _embed.author.url }">${ _embed.author.name }</a></div>` );
+            
+            if ( _embed.author.icon ) {
+                $( '.embed-author-name-edit' ).before( `<img class="embed-author-icon-edit" src="${ _embed.author.icon }" />` );
+            };
+        };
+        
+        if ( _embed.thumb_url ) {
+            $( '.card.embed-edit .card-body' ).append( `<img class="embed-thumb-edit" src="${ _embed.thumb_url }" />` );
+            $( '.embed-thumb-edit' ).height( $( '.embed-thumb-edit' )[ 0 ].naturalHeight );
+            $( '.embed-thumb-edit' ).css('min-height', '50px');
+        };
+        
+        $( '.embed-inner-edit' ).append( `<div class="fields-edit"></div>` );
+        
+        for ( let field of _embed.fields ) {
+            $( '.embed-inner-edit .fields-edit' ).append( `
+                <div class="field-edit ${ field.inline && 'inline' }">
+                    <div class="field-name-edit">${ field.name }</div>
+                    <div class="field-value-edit">${ field.value }</div>
+                </div>
+            `);
+        };
+        
+        if ( _embed.footer ) {
+            $( '.card.embed-edit' ).append( `<div class="embed-footer-edit"><span>${ _embed.footer }</span></div>` );
+        };
+    };
+    
+    updateEmbed( _embed );
+    
+    function generateInputFields( _fields ) {
+        $( '.input-fields-edit' ).html( '' );
+        
+        for ( let i = 0; i < _fields; i++ ) {
+            $( '.input-fields-edit' ).append( `
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <input class="form-control" id="field-${ i }-name-edit" name="field-${ i }-name-edit" type="text" placeholder="Name" value="${ _embed.fields[ i ].name !== undefined ? _embed.fields[ i ].name : '' }" />
+                    </div>
+                
+                    <div class="col-sm-4">
+                        <input class="form-control" id="field-${ i }-value-edit" name="field-${ i }-value-edit" type="text" placeholder="Value" value="${ _embed.fields[ i ].value !== undefined ? _embed.fields[ i ].value : '' }" />
+                    </div>
+                
+                    <div class="col-sm-2">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" id="field-${ i }-inline-edit" name="field-${ i }-inline-edit" type="checkbox" ${ _embed.fields[ i ].inline !== undefined ? 'checked="checked"' : '' }> Inline
+                            </label>
+                        </div>
+                    </div>
+                
+                    <div class="col-sm-2">
+                        <button id="field-${ i }-delete-edit" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            ` );
+            
+            $( `#field-${ i }-name-edit` ).keyup( () => {
+                updateFieldName( i, $( `#field-${ i }-name-edit` ).val() );
+            } );
+            
+            $( `#field-${ i }-value-edit` ).keyup( () => {
+                updateFieldValue( i, $( `#field-${ i }-value-edit` ).val() );
+            } );
+            
+            $( `#field-${ i }-inline-edit` ).click( () => {
+                updateFieldInline( i, $( `#field-${ i }-inline-edit` ).is( ':checked' ) );
+            } );
+            
+            $( `#field-${ i }-delete-edit` ).click( e => {
+                e.preventDefault();
+                
+                deleteField( i );
+            } );
+        };
+        
+        $( '.input-fields-edit' ).append( `<button id="add-field-edit" class="btn btn-success">Add Field</button>` );
+        
+        $( '#add-field-edit' ).click( e => {
+            e.preventDefault();
+            
+            addField();
+        } );
+    };
+    
+    generateInputFields( _fields );
+    
+    function updateFieldName( index, value ) {
+        _embed.fields[ index ].name = value;
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateFieldValue( index, value ) {
+        _embed.fields[ index ].value = value;
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateFieldInline( index, value ) {
+        _embed.fields[ index ].inline = value;
+        
+        updateEmbed( _embed );
+    };
+    
+    function deleteField( index ) {
+        _embed.fields.splice( index, 1 );
+        
+        updateEmbed( _embed );
+        
+        _fields -= 1;
+        
+        generateInputFields( _fields );
+    };
+    
+    function addField() {
+        _embed.fields.push( { inline: true } );
+        
+        _fields += 1;
+        
+        generateInputFields( _fields );
+    };
+    
+    function updateTitle( value ) {
+        _embed.title = value || '';
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateUrl( value ) {
+        _embed.url = value || '';
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateThumb( value ) {
+        _embed.thumb_url = value || false;
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateDescription( value ) {
+        _embed.description = value || '';
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateColor( value ) {
+        _embed.color = value || false;
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateAuthorName( value ) {
+        _embed.author.name = value || '';
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateAuthorUrl( value ) {
+        _embed.author.url = value || '';
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateAuthorIcon( value ) {
+        _embed.author.icon = value || '';
+        
+        updateEmbed( _embed );
+    };
+    
+    function updateFooter( value ) {
+        _embed.footer = value || '';
+        
+        updateEmbed( _embed );
+    };
+    
+    function addWarning( item, type, message ) {
+        item.addClass( 'is-invalid' );
+        item.removeClass( 'is-valid' );
+        
+        if ( $( `#${ type }-feedback` ).length === 0 ) {
+            item.after( `<div class="form-control-feedback text-warning" id="${ type }-feedback">${ message }</div>` );
+        };
+    };
+    
+    function addSuccess( item, type ) {
+        item.removeClass( 'is-invalid' );
+        
+        item.addClass( 'is-valid' );
+        
+        $( `#${ type }-feedback` ).remove();
+    };
+    
+    $( '#editTitle' ).keyup( () => {
+        let item = $( '#editTitle' );
+        let title = item.val();
+        
+        if ( title.length === 0 ) {
+            addWarning( item, 'editTitle', 'Title cannot be empty' );
+        } else {
+            addSuccess( item, 'editTitle' );
+            
+            updateTitle( title );
+        };
+    } );
+    
+    $( '#editUrl' ).keyup( () => {
+        let item = $( '#editUrl' );
+        let url = item.val();
+        
+        if ( url.substr( 0, 4 ) !== 'http' && url.length !== 0 ) {
+            addWarning( item, 'editUrl', 'Not a valid URL' );
+        } else {
+            addSuccess( item, 'editUrl' );
+            
+            updateUrl( url );
+        };
+    } );
+    
+    $( '#editIcon' ).keyup( () => {
+        let item = $( '#editIcon' );
+        let icon = item.val();
+        
+        if ( icon.substr( 0, 4 ) !== 'http' && icon.length !== 0 ) {
+            addWarning( item, 'editIcon', 'Not a valid URL' );
+        } else {
+            addSuccess( item, 'editIcon' );
+            
+            updateThumb( icon );
+        };
+    } );
+    
+    $( '#editDescription' ).keyup( () => {
+        let item = $( '#editDescription' );
+        let description = item.val();
+        
+        addSuccess( item, 'editDescription' );
+        
+        updateDescription( description );
+    } );
+    
+    $( '#editColor' ).change( () => {
+        updateColor( $( '#editColor' ).val() );
+    } );
+    
+    $( '#edit_author_name' ).keyup( () => {
+        let item = $( '#edit_author_name' );
+        let author_name = item.val();
+        
+        addSuccess( item, 'edit_author_name' );
+        
+        updateAuthorName( author_name );
+    } );
+    
+    $( '#edit_author_url' ).keyup( () => {
+        let item = $( '#edit_author_url' );
+        let author_url = item.val();
+        
+        if ( author_url.substr( 0, 4 ) !== 'http' && author_url.length !== 0 ) {
+            addWarning( item, 'edit_author_url', 'Not a valid URL' );
+        } else {
+            addSuccess( item, 'edit_author_url' );
+            
+            updateAuthorUrl( author_url );
+        };
+    } );
+    
+    $( '#edit_author_icon' ).keyup( () => {
+        let item = $( '#edit_author_icon' );
+        let author_icon = item.val();
+        
+        if ( author_icon.substr( 0, 4 ) !== 'http' && author_icon.length !== 0 ) {
+            addWarning( item, 'edit_author_icon', 'Not a valid URL' );
+        } else {
+            addSuccess( item, 'edit_author_icon' );
+            
+            updateAuthorIcon( author_icon );
+        };
+    } );
+    
+    $( '#editFooter' ).keyup( () => {
+        let item = $( '#editFooter' );
+        let footer = item.val();
+        
+        addSuccess( item, 'editFooter' );
+
+        updateFooter( footer );
+    } );
+    $( '#messageFetchIDBtn' ).on( 'click', function( e ) {
+        e.preventDefault();
+        
+        $.ajax( {
+            type: 'post',
+            url: `${window.location.origin}/api/embed/fetch`,
+            data: { channel: $( '#messageFetchChannel' ).val(), id: $( '#messageFetchID' ).val() },
+            // success: function( data ) {
+            complete: function(jqXHR, status) {
+                addSuccess( $( '#messageFetchID' ), 'messageFetchID' );
+                
+                if ( status == 'error' ) {
+                    return addWarning( $( '#messageFetchID' ), 'messageFetchID', 'Message embed not found' );
+                };
+                
+                data = jqXHR.responseJSON;
+                data = data && typeof data == 'object' ? data : {};
+                data.author = data.author && typeof data.author == 'object' ? data.author : {};
+                data.thumbnail = data.thumbnail && typeof data.thumbnail == 'object' ? data.thumbnail : {};
+                data.footer = data.footer && typeof data.footer == 'object' ? data.footer : {};
+
+                updateEmbed({
+                    ...data,
+                    author: { name: data.author.name, url: data.author.url, icon: data.author.icon_url },
+                    thumb_url: data.thumbnail.url,
+                    color: `#${data.color.toString(16).padStart(6, '0')}`,
+                    footer: data.footer.text
+                });
+
+                $( '#editTitle' ).val(data.title);
+                $( '#editDescription' ).val(data.description);
+                $( '#editUrl' ).val(data.url);
+                $( '#editColor' ).val(`#${data.color.toString(16).padStart(6, '0')}`);
+                $( '#editIcon' ).val(data.thumbnail.url);
+                $( '#edit_author_name' ).val(data.author.name);
+                $( '#edit_author_url' ).val(data.author.url);
+                $( '#edit_author_icon' ).val(data.author.icon_url);
+                $( '#editFooter' ).val(data.footer.text);
+
+                // let _fields = 0,
+                //     _embed = {
+                //         title: 'Embed title (required)',
+                //         author: { name: '', url: '', icon: '' },
+                //         description: '',
+                //         url: '',
+                //         thumb_url: '',
+                //         color: '',
+                //         fields: [],
+                //         footer: ''
+                //     };
+
+                _fields = data.fields.length;
+                _embed.fields = data.fields;
+
+                // generateInputFields( [] )
+                // console.log(_embed.fields)
+                generateInputFields( _fields )
+                // _embed.fields.forEach()
+
+                // data.fields.forEach( ( field, i ) => {
+                //     console.log('add')
+                //     addField();
+
+                //     updateFieldName( i, field.name );
+                //     updateFieldValue( i, field.value );
+                //     updateFieldInline( i, !!field.inline );
+                // } );
+            }
+        } );
+    } );
+} );
+</script>
