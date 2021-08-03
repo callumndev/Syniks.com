@@ -478,34 +478,10 @@ $( document ).ready( () => {
                 $( '#edit_author_icon' ).val(data.author.icon_url);
                 $( '#editFooter' ).val(data.footer.text);
 
-                // let _fields = 0,
-                //     _embed = {
-                //         title: 'Embed title (required)',
-                //         author: { name: '', url: '', icon: '' },
-                //         description: '',
-                //         url: '',
-                //         thumb_url: '',
-                //         color: '',
-                //         fields: [],
-                //         footer: ''
-                //     };
-
                 _fields = data.fields.length;
                 _embed.fields = data.fields;
 
-                // generateInputFields( [] )
-                // console.log(_embed.fields)
-                generateInputFields( _fields )
-                // _embed.fields.forEach()
-
-                // data.fields.forEach( ( field, i ) => {
-                //     console.log('add')
-                //     addField();
-
-                //     updateFieldName( i, field.name );
-                //     updateFieldValue( i, field.value );
-                //     updateFieldInline( i, !!field.inline );
-                // } );
+                generateInputFields( _fields );
             }
         } );
     } );

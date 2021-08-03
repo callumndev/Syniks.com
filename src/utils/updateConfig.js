@@ -312,7 +312,6 @@ module.exports = async ( guild, body = {} ) => {
     
     
     // Message Embed Editor
-    console.log('body', body);
     if ( body.messageFetchChannel && typeof body.messageFetchChannel == 'string' ) {
         if ( !guild.channels.cache.has( body.messageFetchChannel ) ) {
             alerts.push( 'Invalid embed channel provided' );
