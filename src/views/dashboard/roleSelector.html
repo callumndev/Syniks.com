@@ -1,5 +1,5 @@
 <%
-    let roles = guild.roles.cache.filter( r => r != guild.roles.everyone && !guild.config.autoRoles.includes( r.id ) );
+    let roles = guild.roles.cache.filter( r => r != guild.roles.everyone );
 %>
 
 <select class="form-select" name="<%= locals.name %>">

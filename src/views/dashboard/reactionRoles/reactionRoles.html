@@ -1,0 +1,137 @@
+<%
+function toColor( num ) {
+    num >>>= 0;
+
+    let b = num & 0xFF,
+        g = ( num & 0xFF00 ) >>> 8,
+        r = ( num & 0xFF0000 ) >>> 16,
+        a = ( ( num & 0xFF000000 ) >>> 24 ) / 255;
+
+    return 'rgba(' + [ r, g, b, a ].join( ',' ) + ')';
+};
+%>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Add Reaction Role</h5>
+            <p class="card-text">Add a new reaction role</p>
+
+            <br>
+            
+            <div class="form-group">
+                <label>Role</label>
+                <%- include('../roleSelector.html', { name: 'reactionRoleID' }) %>
+            </div>
+
+            <hr>
+
+            <div class="form-group">
+                <label>Channel</label>
+                <%- include('../channelSelector.html', { name: 'reactionChannelID' }) %>
+            </div>
+
+            <hr>
+
+            <div class="form-group">
+                <label>Message ID</label>
+                <input type="text" class="form-control" id="reactionMessageID" name="reactionMessageID" placeholder="Message ID">
+            </div>
+
+            <hr>
+
+            <div class="form-group">
+                <label>Emoji</label>
+                <input type="text" class="form-control" id="reactionEmoji" name="reactionEmoji" placeholder="Emoji" maxlength="2">
+            </div>
+
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Reaction Roles</h5>
+            <p class="card-text">Reaction roles existing on the server already</p>
+            
+            <br>
+
+            <div class="card-content">
+                <ol class="list-group list-group-numbered">
+                    <%
+                        guild.reactionRoles.forEach( role => {
+                    %>
+                        <li class="list-group-item d-flex justify-content-between align-items-start" id="reactionRole-<%= role ? role.rID : 'null' %>">
+                            <input type="text" class="form-control visually-hidden" name="reactionRoles" value="<%= role ? role.rID : 'null' %>">
+
+                            <div class="ms-2 me-auto">
+                                Role: <span class="fw-bold" style="color: <%= role.r ? role.r.hexColor : 'grey' %>">
+                                    <% if ( role.r ) { %>
+                                        <%= role.r.name %>
+                                    <% } else { %>
+                                        Deleted Role
+                                    <% } %>
+                                </span>
+
+                                <hr>
+
+                                <div class="form-group">
+                                    <label>Message</label>
+                                    <br>
+                                    <% if ( role.m ) { %>
+                                        <%= role.m.id %>
+                                    <% } else { %>
+                                        Invalid Message
+                                    <% } %>
+                                </div>
+                        
+                                <hr>
+                        
+                                <div class="form-group">
+                                    <label>Channel</label>
+                                    <br>
+                                    <% if ( role.c ) { %>
+                                        <%- include('../discordChannel.html', { name: role.c.name }) %>
+                                    <% } else { %>
+                                        Invalid Channel
+                                    <% } %>
+                                </div>
+
+                                <hr>
+                        
+                                <div class="form-group">
+                                    <label>Emoji</label>
+                                    <br>
+                                    <% if ( role.emoji ) { %>
+                                        <%= role.emoji %>
+                                    <% } else { %>
+                                        Invalid Emoji
+                                    <% } %>
+                                </div>
+                            </div>
+
+                            <a class="badge bg-primary rounded-pill" role="button" id="deleteReactionRole-<%= role ? role.rID : 'null' %>">X</a>
+                        </li>
+                    <% } ); %>
+
+                    <li class="visually-hidden">
+                        <input type="text" class="form-control visually-hidden" name="reactionRoles" value="placeholder">
+                        <input type="text" class="form-control visually-hidden" name="reactionRoles" value="placeholder">
+                    </li>
+                </ol>
+                
+                <% if ( guild.reactionRoles.length <= 0 ) { %>
+                    None
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $( 'a' ).on( 'click', event => {
+        let elID = event.target.id;
+        if ( !elID.startsWith( 'deleteReactionRole' ) ) return;
+
+        $( `#reactionRole-${ elID.split( '-' )[ 1 ] }` ).remove()
+    } );
+</script>

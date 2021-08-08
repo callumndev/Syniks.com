@@ -41,18 +41,17 @@ module.exports = async ( guild, body = {} ) => {
     if ( body.autoRoles && typeof body.autoRoles == 'object' ) {
         let missingRoles = guild.config.autoRoles.filter( r => !body.autoRoles.includes( r ) );
 
-        if ( missingRoles.length > 0 ) {
-            missingRoles.map( r => alerts.push( `Deleted auto role ${ guild.roles.cache.has( r ) ? guild.roles.cache.get( r ).name : r }` ) );
-            
+        if ( missingRoles.length > 0 ) {            
             guild.config.autoRoles = guild.config.autoRoles.filter( r => !missingRoles.includes( r ) );
         };
     };
     if ( body.addAutoRole && body.addAutoRole != 'null' && didChange( 'addAutoRole' ) && typeof body.addAutoRole == 'string' ) {
         if ( !guild.roles.cache.has( body.addAutoRole ) ) {
             alerts.push( 'Invalid auto role ID provided' );
+        } else if ( guild.config.autoRoles.includes( body.addAutoRole ) ) {
+            alerts.push( 'The role you provided is already an auto role' );
         } else {
             guild.config.autoRoles.push( body.addAutoRole );
-            alerts.push( `Added auto role ${ guild.roles.cache.get( body.addAutoRole ).name }` );
         };
     };
 
@@ -153,6 +152,98 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invalid level message channel ID provided' );
         } else if ( guild.channels.cache.get( body.levelMessageChannel ) && guild.channels.cache.get( body.levelMessageChannel ).type == 'text' || body.levelMessageChannel == 'null' ) {
             guild.config.levelMessageChannel = body.levelMessageChannel == 'null' ? null : body.levelMessageChannel;
+        };
+    };
+    
+    // // Reaction Roles
+    // gID: syniks.db.DataTypes.STRING,
+    // mID: syniks.db.DataTypes.STRING,
+    // cID: syniks.db.DataTypes.STRING,
+    // rID: syniks.db.DataTypes.STRING,
+    // emoji: 'VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+    if ( body.reactionRoles && typeof body.reactionRoles == 'object' ) {
+        let missingReactionRoles = guild.reactionRoles.filter( r => !body.reactionRoles.includes( r.rID ) );
+
+        if ( missingReactionRoles.length > 0 ) {            
+            missingReactionRoles.forEach( async role => {
+                await syniks.db.reactStorage.destroy( { where: { gID: guild.id, mID: role.mID, cID: role.cID, rID: role.rID, emoji: role.emoji } } );
+            } );
+        };
+    };
+    if ( body.reactionRoles && typeof body.reactionRoles == 'object' ) {
+        let reactionRole = {};
+
+        if ( body.reactionRoleID && body.reactionRoleID != 'null' && typeof body.reactionRoleID == 'string' ) {
+            if ( !guild.roles.cache.has( body.reactionRoleID ) ) {
+                alerts.push( 'Invalid auto role ID provided' );
+            } else {
+                reactionRole.rID = body.reactionRoleID;
+            };
+        };
+        
+        if ( body.reactionChannelID && body.reactionChannelID != 'null' && typeof body.reactionChannelID == 'string' ) {
+            if ( !guild.channels.cache.has( body.reactionChannelID ) ) {
+                alerts.push( 'Invalid reaction role channel provided' );
+            } else if ( guild.channels.cache.get( body.reactionChannelID ) && guild.channels.cache.get( body.reactionChannelID ).type == 'text' ) {
+                reactionRole.cID = body.reactionChannelID;
+
+                try {
+                    let message = await guild.channels.cache.get( body.reactionChannelID ).messages.fetch( body.reactionMessageID );
+                    if ( message ) {
+                        reactionRole.mID = body.reactionMessageID;
+                    } else {
+                        throw new Error();
+                    };
+                } catch (error) {
+                    alerts.push( 'Invalid reaction role message ID provided' );
+                };
+            };
+        };
+
+        if ( body.reactionEmoji && typeof body.reactionEmoji == 'string' ) {
+            function isEmoji( text ) {
+                const onlyEmojis = text.replace(new RegExp('[\u0000-\u1eeff]', 'g'), '');
+                const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '');
+                return onlyEmojis.length === visibleChars.length;
+            };
+            function emojiUnicode( emoji ) {
+                var comp;
+                if (emoji.length === 1) {
+                    comp = emoji.charCodeAt(0);
+                }
+                comp = (
+                    (emoji.charCodeAt(0) - 0xD800) * 0x400
+                  + (emoji.charCodeAt(1) - 0xDC00) + 0x10000
+                );
+                if (comp < 0) {
+                    comp = emoji.charCodeAt(0);
+                }
+                return comp.toString("16");
+            };
+
+            if ( body.reactionEmoji.length > 2 ) {
+                alerts.push( 'Reaction role emoji cannot be longer than one emoji' );
+            } else if ( !isEmoji( body.reactionEmoji ) ) {
+                alerts.push( 'You need to provide a valid emoji' );
+            } else {
+                reactionRole.emoji = body.reactionEmoji;
+            };
+        };
+
+        if ( reactionRole.mID && reactionRole.cID && reactionRole.rID && reactionRole.emoji ) {
+            let existingReactionRoles = await syniks.services.reactionRoles.get( guild.id ),
+            roleAlreadyExists = existingReactionRoles.some( role => {
+                return role.mID == reactionRole.mID &&
+                role.cID == reactionRole.cID &&
+                role.rID == reactionRole.rID &&
+                emojiUnicode( role.emoji ) == emojiUnicode( reactionRole.emoji );
+            } );
+
+            if ( roleAlreadyExists ) {
+                alerts.push( 'The reaction role combination you provided already exists' );
+            } else {
+                await syniks.db.reactStorage.create( Object.assign( reactionRole, { gID: guild.id } ) );
+            };
         };
     };
 

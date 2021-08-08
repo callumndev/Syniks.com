@@ -4,6 +4,7 @@ module.exports = {
 
         if ( guild ) {
             guild.config = await syniks.services.config.get( guild.id );
+            guild.reactionRoles = await syniks.services.reactionRoles.get( guild.id );
         };
 
         return guild;

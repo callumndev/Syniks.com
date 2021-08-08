@@ -16,7 +16,7 @@ dashboard.get( '/:guildID', syniks.util.auth.check, async ( req, res ) => {
 
             member = guild.members.cache.get( req.user.id );
         } catch ( e ) {
-            console.log( `[Error] [Guild: ${ guild.name } ${ guild.id }] Error fetching member ${ req.user.id }: ${ e.message }` );
+            console.error( `[Error] [Guild: ${ guild.name } ${ guild.id }] Error fetching member ${ req.user.id }: ${ e.message }` );
         };
     };
 
@@ -45,7 +45,7 @@ dashboard.post( '/:guildID', syniks.util.auth.check, async ( req, res ) => {
 
             member = guild.members.cache.get( req.user.id );
         } catch ( e ) {
-            console.log( `[Error] [Guild: ${ guild.name } ${ guild.id }] Error fetching member ${ req.user.id }: ${ e.message }` );
+            console.error( `[Error] [Guild: ${ guild.name } ${ guild.id }] Error fetching member ${ req.user.id }: ${ e.message }` );
         };
     };
 

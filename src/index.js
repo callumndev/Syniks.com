@@ -6,7 +6,7 @@ global.syniks = {
 };
 
 
-process.on( 'unhandledRejection', err => console.log( '[unhandledRejection err]: ', err ) );
+process.on( 'unhandledRejection', err => console.error( '[unhandledRejection err]: ', err ) );
 
 
 
@@ -234,7 +234,7 @@ syniks.app.use( ( req, res, next ) => {
 syniks.app.use( ( err, req, res, next ) => {
     res.status( err.status || 500 );
 
-    console.log( '500 Error:', err );
+    console.error( '500 Error:', err );
 
     let error = err.message.split( '\n\n' );
     error = {
@@ -247,8 +247,12 @@ syniks.app.use( ( err, req, res, next ) => {
 
 
 // Listen
+function start() {
+    syniks.app.listen( syniks.port, () => console.info(`[Syniks] Ready on port ${ syniks.port }` ) );
+};
+
 if ( syniks.services.discord.bot ) {
-    syniks.services.discord.bot.on( 'readyForApp', () => syniks.app.listen( syniks.port, () => console.log(`[Syniks] Ready on port ${ syniks.port }` ) ) );
+    syniks.services.discord.bot.on( 'readyForApp', () => start() );
 } else {
-    syniks.app.listen( syniks.port, () => console.log(`[Syniks] Ready on port ${ syniks.port }` ) );
+    start()
 };

@@ -1,5 +1,5 @@
 module.exports = async bot => {
-    function log( seperator, args ) {
+    function readyMessage( seperator, args ) {
         if ( typeof args != 'object') throw new TypeError( 'args must be typeof object' );
 
         function logArray( arr ) {
@@ -12,10 +12,10 @@ module.exports = async bot => {
             .map( arg => typeof arg == 'object' ? logArray( arg ) : arg )
             .join( `\n${ seperator }\n` );
         
-        console.log( args );
+        console.info( args );
     };
 
-    log( '_____________________', [
+    readyMessage( '_____________________', [
         `[Syniks - Bot] ${ bot.user.tag } is online`,
         [
             'Bot:',

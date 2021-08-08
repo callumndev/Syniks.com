@@ -7,7 +7,7 @@ function read( dir ) {
         dirs = filesAndDirs.filter( file => fs.lstatSync( path.join( dir, file ) ).isDirectory() ),
         _files = [];
             
-    dirs.forEach( directory => {        
+    dirs.forEach( directory => {
         for ( const [ k, v ] of Object.entries( read( path.join( dir, directory ) ) ) ) {
             _files.push( { name: v.name, util: v.util } );
         };
