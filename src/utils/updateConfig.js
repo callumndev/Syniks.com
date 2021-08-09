@@ -248,6 +248,27 @@ module.exports = async ( guild, body = {} ) => {
     };
 
 
+    // // lockdown Roles
+    // roles: { type: syniks.db.DataTypes.JSON, allowNull: false, defaultValue: syniks.settings.modelDefaults.lockdownConfig.roles },
+    if ( body.lockdownRoles && typeof body.lockdownRoles == 'object' ) {
+        let missingRoles = guild.lockdownRoles.filter( r => !body.lockdownRoles.includes( r ) );
+
+        if ( missingRoles.length > 0 ) {            
+            guild.lockdownRoles = guild.lockdownRoles.filter( r => !missingRoles.includes( r ) );
+        };
+    };
+    if ( body.addLockdownRole && body.addLockdownRole != 'null' && didChange( 'addLockdownRole' ) && typeof body.addLockdownRole == 'string' ) {
+        if ( !guild.roles.cache.has( body.addLockdownRole ) ) {
+            alerts.push( 'Invalid lockdown role ID provided' );
+        } else if ( guild.lockdownRoles.includes( body.addLockdownRole ) ) {
+            alerts.push( 'The role you provided is already a lockdown role' );
+        } else {
+            guild.lockdownRoles.push( body.addLockdownRole );
+        };
+    };
+    if ( body.lockdownRoles || body.addLockdownRole ) {
+        await syniks.services.lockdownRoles.set( guild.id, { roles: guild.lockdownRoles } );
+    };
     // Update Config
     await syniks.services.config.set( guild.id, guild.config );
 

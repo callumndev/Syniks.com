@@ -1,0 +1,79 @@
+<%
+function toColor( num ) {
+    num >>>= 0;
+
+    let b = num & 0xFF,
+        g = ( num & 0xFF00 ) >>> 8,
+        r = ( num & 0xFF0000 ) >>> 16,
+        a = ( ( num & 0xFF000000 ) >>> 24 ) / 255;
+
+    return 'rgba(' + [ r, g, b, a ].join( ',' ) + ')';
+};
+%>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Add Lockdown Role</h5>
+            <p class="card-text">Add a role to be affected in lockdowns</p>
+
+            <br>
+            
+            <%- include('../roleSelector.html', { name: 'addLockdownRole' } ) %>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Lockdown Roles</h5>
+            <p class="card-text">Roles to be affected in server lockdowns</p>
+            
+            <br>
+
+            <div class="card-content">
+                <ol class="list-group list-group-numbered">
+                    <%
+                        guild.lockdownRoles.forEach( role => {
+                            let lockdownRole = guild.roles.cache.get( role );
+                    %>
+                        <li class="list-group-item d-flex justify-content-between align-items-start" id="lockdownRole-<%= role || 'null' %>">
+                            <input type="text" class="form-control visually-hidden" name="lockdownRoles" value="<%= role || 'null' %>">
+
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold" style="color: <%= lockdownRole ? lockdownRole.hexColor : 'grey' %>">
+                                    <% if ( lockdownRole ) { %>
+                                        <%= lockdownRole.name %>
+                                    <% } else { %>
+                                        Deleted Role
+                                    <% } %>
+                                </div>
+
+                                <%= role %>
+                            </div>
+
+                            <a class="badge bg-primary rounded-pill" role="button" id="deleteLockdownRole-<%= role || 'null' %>">X</a>
+                        </li>
+                    <% } ); %>
+
+                    <li class="visually-hidden">
+                        <input type="text" class="form-control visually-hidden" name="lockdownRoles" value="placeholder">
+                        <input type="text" class="form-control visually-hidden" name="lockdownRoles" value="placeholder">
+                    </li>
+                </ol>
+                
+                <% if ( guild.lockdownRoles.length  <= 0 ) { %>
+                    None
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $( 'a' ).on( 'click', event => {
+        let elID = event.target.id;
+        if ( !elID.startsWith( 'deleteLockdownRole' ) ) return;
+
+        $( `#lockdownRole-${ elID.split( '-' )[ 1 ] }` ).remove()
+    } );
+</script>
