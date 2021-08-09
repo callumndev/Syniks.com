@@ -1,0 +1,41 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Leave Management Channel</h5>
+            <p class="card-text">The channel used for leave messages</p>
+
+            <br>
+            
+            <%- include('../channelSelector.html', { channel: guild.config.leaveChannel, name: 'leaveChannel' }) %>
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Leave Channel</h5>
+            <p class="card-text">Information about the current leave channel</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+                <%
+                    let leaveChannel = guild.channels.cache.get( guild.config.leaveChannel );
+                %>
+                
+                <% if ( leaveChannel ) { %>
+                    <% if ( leaveChannel.parent ) { %>
+                        <%- include('../discordChannel.html', { name: leaveChannel.parent.name, category: true }) %>
+                    <% } %>
+
+                    <div class="<%= leaveChannel.parent ? 'ms-4 mt-1' : '' %>">
+                        <%- include('../discordChannel.html', { name: leaveChannel.name }) %>
+                    </div>
+                <% } else if ( !guild.config.leaveChannel ) { %>
+                    Not Set
+                <% } else if ( !leaveChannel ) { %>
+                    Deleted Channel
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

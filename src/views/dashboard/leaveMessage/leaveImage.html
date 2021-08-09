@@ -1,0 +1,29 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Leave Image (URL)</h5>
+            <p class="card-text">The image used when someone leaves the server</p>
+
+            <br>
+            
+            <input type="text" class="form-control" name="leaveImage" value="<%= guild.config.leaveImage %>" placeholder="<%= guild.config.leaveImage %>">
+        </div>
+    </div>
+    
+    <div class="card dash-card">
+        <div class="card-body">
+            <h5 class="card-title">Current Leave Image</h5>
+            <p class="card-text">Rendered image of the current leave image URL</p>
+            
+            <br>
+
+            <div class="card-content" style="display: grid; justify-content: center; align-items: center;">
+                <% if ( guild.config.leaveImage ) { %>
+                    <img src="<%= guild.config.leaveImage %>" class="d-block mx-lg-auto img-fluid" alt="leaveImage" width="375" height="375" loading="lazy">
+                <% } else { %>
+                    Not Set
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

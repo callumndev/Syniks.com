@@ -34,5 +34,9 @@ module.exports = syniks.db.define( 'config', {
     numberGuesserChannel: syniks.db.DataTypes.STRING,
     numberGuesserNumber: syniks.db.DataTypes.INTEGER,
     numberGuesserNumberMin: syniks.db.DataTypes.INTEGER,
-    numberGuesserNumberMax: syniks.db.DataTypes.INTEGER
+    numberGuesserNumberMax: syniks.db.DataTypes.INTEGER,
+
+    // Leave Message
+    leaveChannel:       syniks.db.DataTypes.STRING,
+    leaveImage:         syniks.db.DataTypes.STRING
 } );

@@ -269,6 +269,27 @@ module.exports = async ( guild, body = {} ) => {
     if ( body.lockdownRoles || body.addLockdownRole ) {
         await syniks.services.lockdownRoles.set( guild.id, { roles: guild.lockdownRoles } );
     };
+
+    // // Leave Message
+    // leaveChannel:       syniks.db.DataTypes.STRING,
+    if ( body.leaveChannel && didChange( 'leaveChannel' ) && typeof body.leaveChannel == 'string' ) {
+        if ( !guild.channels.cache.has( body.leaveChannel ) && body.leaveChannel != 'null' ) {
+            alerts.push( 'Invalid leave channel ID provided' );
+        } else if (  guild.channels.cache.get( body.leaveChannel ) && guild.channels.cache.get( body.leaveChannel ).type == 'text' || body.leaveChannel == 'null' ) {
+            guild.config.leaveChannel = body.leaveChannel == 'null' ? null : body.leaveChannel;
+        };
+    };
+    
+    // leaveImage:         syniks.db.DataTypes.STRING
+    if ( body.leaveImage != undefined && didChange( 'leaveImage' ) && typeof body.leaveImage == 'string' ) {
+        if ( !isImageURL( body.leaveImage ) && body.leaveImage != '' ) {
+            alerts.push( 'Leave image must be a valid image URL' );
+        } else {
+            guild.config.leaveImage = body.leaveImage == '' ? null : body.leaveImage;
+        };
+    };
+
+
     // Update Config
     await syniks.services.config.set( guild.id, guild.config );
 
