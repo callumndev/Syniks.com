@@ -1,8 +1,8 @@
 module.exports = syniks.db.define( 'reactStorage', {
     aic: {
-      type: syniks.db.DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
+        type: syniks.db.DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     gID: syniks.db.DataTypes.STRING,
     mID: syniks.db.DataTypes.STRING,
