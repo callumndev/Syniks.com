@@ -121,7 +121,7 @@ syniks.passport.use( new Strategy( syniks.settings.auth, ( accessToken, refreshT
         let iconURL =  guild.icon ? `https://cdn.discordapp.com/icons/${ guild.id }/${ guild.icon }` : 'https://discord.com/assets/f9bb9c4af2b9c32a2c5ee0014661546d.png';
         guild.icon = `${ iconURL }?size=4096`;
         guild.iconSmall = `${ iconURL }?size=256`;
-        guild.inviteURL = `${ syniks.settings.botInvite }&guild_id=${ guild.id }&redirect_uri=${ encodeURIComponent( `${ syniks.settings.siteURL }/invited?redirect=/profile`) }`;
+        guild.inviteURL = `${ syniks.settings.botInvite }&guild_id=${ guild.id }&redirect_uri=${ encodeURIComponent( `${ syniks.settings.siteURL }/invited`) }`;
 
         delete guild.icon_hash;
         delete guild.splash;
