@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-control-regex */
 const isImageURL = require( 'is-image-url' ),
     { MessageEmbed } = require( 'discord.js' );
 
@@ -10,7 +12,28 @@ function validURL( str ) {
     '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
     
     return !!pattern.test( str );
-};
+}
+
+function emojiUnicode( emoji ) {
+    var comp;
+    if (emoji.length === 1) {
+        comp = emoji.charCodeAt(0);
+    }
+    comp = (
+        (emoji.charCodeAt(0) - 0xD800) * 0x400
+      + (emoji.charCodeAt(1) - 0xDC00) + 0x10000
+    );
+    if (comp < 0) {
+        comp = emoji.charCodeAt(0);
+    }
+    return comp.toString("16");
+}
+
+function isEmoji( text ) {
+    const onlyEmojis = text.replace(new RegExp('[\u0000-\u1eeff]', 'g'), '');
+    const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '');
+    return onlyEmojis.length === visibleChars.length;
+}
 
 
 module.exports = async ( guild, body = {} ) => {
@@ -25,8 +48,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Prefix cannot be longer than two characters' );
         } else {
             guild.config.prefix = body.prefix;
-        };
-    };
+        }
+    }
 
     // suggestionChannel:  syniks.db.DataTypes.STRING,
     if ( body.suggestionChannel && didChange( 'suggestionChannel' ) && typeof body.suggestionChannel == 'string' ) {
@@ -34,8 +57,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invalid suggestion channel ID provided' );
         } else if ( guild.channels.cache.get( body.suggestionChannel ) && guild.channels.cache.get( body.suggestionChannel ).type == 'text' || body.suggestionChannel == 'null' ) {
             guild.config.suggestionChannel = body.suggestionChannel == 'null' ? null : body.suggestionChannel;
-        };
-    };
+        }
+    }
 
     // autoRoles:          { type: syniks.db.DataTypes.JSON, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.autoRoles },
     if ( body.autoRoles && typeof body.autoRoles == 'object' ) {
@@ -43,8 +66,8 @@ module.exports = async ( guild, body = {} ) => {
 
         if ( missingRoles.length > 0 ) {            
             guild.config.autoRoles = guild.config.autoRoles.filter( r => !missingRoles.includes( r ) );
-        };
-    };
+        }
+    }
     if ( body.addAutoRole && body.addAutoRole != 'null' && didChange( 'addAutoRole' ) && typeof body.addAutoRole == 'string' ) {
         if ( !guild.roles.cache.has( body.addAutoRole ) ) {
             alerts.push( 'Invalid auto role ID provided' );
@@ -52,8 +75,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'The role you provided is already an auto role' );
         } else {
             guild.config.autoRoles.push( body.addAutoRole );
-        };
-    };
+        }
+    }
 
 
     // // Logs
@@ -63,8 +86,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invalid mod log channel ID provided' );
         } else if ( guild.channels.cache.get( body.modLogChannel ) && guild.channels.cache.get( body.modLogChannel ).type == 'text' || body.modLogChannel == 'null' ) {
             guild.config.modLogChannel = body.modLogChannel == 'null' ? null : body.modLogChannel;
-        };
-    };
+        }
+    }
 
     // eventLogChannel:    syniks.db.DataTypes.STRING,
     if ( body.eventLogChannel && didChange( 'eventLogChannel' ) && typeof body.eventLogChannel == 'string' ) {
@@ -72,8 +95,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invalid event log channel ID provided' );
         } else if ( guild.channels.cache.get( body.eventLogChannel ) && guild.channels.cache.get( body.eventLogChannel ).type == 'text' || body.eventLogChannel == 'null' ) {
             guild.config.eventLogChannel = body.eventLogChannel == 'null' ? null : body.eventLogChannel;
-        };
-    };
+        }
+    }
 
     // disabledEvents:     { type: syniks.db.DataTypes.JSON, allowNull: false, defaultValue: syniks.settings.modelDefaults.config.disabledEvents },
     for (const [ key, value ] of Object.entries( body ) ) {
@@ -88,11 +111,11 @@ module.exports = async ( guild, body = {} ) => {
                 } else {
                     if ( !guild.config.disabledEvents.includes( eventName ) ) {
                         guild.config.disabledEvents.push( eventName );
-                    };
-                };
-            };
-        };
-    };
+                    }
+                }
+            }
+        }
+    }
 
 
     // // VC
@@ -102,8 +125,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invalid auto VC category ID provided' );
         } else if ( guild.channels.cache.get( body.autoVC_Category ) && guild.channels.cache.get( body.autoVC_Category ).type == 'category' || body.autoVC_Category == 'null' ) {
             guild.config.autoVC_Category = body.autoVC_Category == 'null' ? null : body.autoVC_Category;
-        };
-    };
+        }
+    }
 
     // autoVC_Channel:     syniks.db.DataTypes.STRING,
     if ( body.autoVC_Channel && didChange( 'autoVC_Channel' ) && typeof body.autoVC_Channel == 'string' ) {
@@ -111,8 +134,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invalid auto VC channel ID provided' );
         } else if ( guild.channels.cache.get( body.autoVC_Channel ) && guild.channels.cache.get( body.autoVC_Channel ).type == 'voice' || body.autoVC_Channel == 'null' ) {
             guild.config.autoVC_Channel = body.autoVC_Channel == 'null' ? null : body.autoVC_Channel;
-        };
-    };
+        }
+    }
 
 
     // // Invites
@@ -122,8 +145,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invalid invite channel ID provided' );
         } else if (  guild.channels.cache.get( body.inviteChannel ) && guild.channels.cache.get( body.inviteChannel ).type == 'text' || body.inviteChannel == 'null' ) {
             guild.config.inviteChannel = body.inviteChannel == 'null' ? null : body.inviteChannel;
-        };
-    };
+        }
+    }
 
     // inviteImage:        syniks.db.DataTypes.STRING,
     if ( body.inviteImage != undefined && didChange( 'inviteImage' ) && typeof body.inviteImage == 'string' ) {
@@ -131,8 +154,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invite image must be a valid image URL' );
         } else {
             guild.config.inviteImage = body.inviteImage == '' ? null : body.inviteImage;
-        };
-    };
+        }
+    }
 
 
     // // Server Stats
@@ -142,8 +165,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invite server stats toggle' );
         } else {
             guild.config.serverStatsEnabled = body.serverStatsEnabled == 'true' ? true : false;
-        };
-    };
+        }
+    }
 
     // // Levelling
     // levelMessageChannel: syniks.db.DataTypes.STRING
@@ -152,8 +175,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invalid level message channel ID provided' );
         } else if ( guild.channels.cache.get( body.levelMessageChannel ) && guild.channels.cache.get( body.levelMessageChannel ).type == 'text' || body.levelMessageChannel == 'null' ) {
             guild.config.levelMessageChannel = body.levelMessageChannel == 'null' ? null : body.levelMessageChannel;
-        };
-    };
+        }
+    }
     
     // // Reaction Roles
     // gID: syniks.db.DataTypes.STRING,
@@ -168,18 +191,18 @@ module.exports = async ( guild, body = {} ) => {
             missingReactionRoles.forEach( async role => {
                 await syniks.db.reactStorage.destroy( { where: { gID: guild.id, mID: role.mID, cID: role.cID, rID: role.rID, emoji: role.emoji } } );
             } );
-        };
-    };
+        }
+    }
     if ( body.reactionRoles && typeof body.reactionRoles == 'object' ) {
-        let reactionRole = {};
+        let reactionRole = {}
 
         if ( body.reactionRoleID && body.reactionRoleID != 'null' && typeof body.reactionRoleID == 'string' ) {
             if ( !guild.roles.cache.has( body.reactionRoleID ) ) {
                 alerts.push( 'Invalid auto role ID provided' );
             } else {
                 reactionRole.rID = body.reactionRoleID;
-            };
-        };
+            }
+        }
         
         if ( body.reactionChannelID && body.reactionChannelID != 'null' && typeof body.reactionChannelID == 'string' ) {
             if ( !guild.channels.cache.has( body.reactionChannelID ) ) {
@@ -193,42 +216,35 @@ module.exports = async ( guild, body = {} ) => {
                         reactionRole.mID = body.reactionMessageID;
                     } else {
                         throw new Error();
-                    };
+                    }
                 } catch (error) {
                     alerts.push( 'Invalid reaction role message ID provided' );
-                };
-            };
-        };
+                }
+            }
+        }
 
+        // console.log(body)
         if ( body.reactionEmoji && typeof body.reactionEmoji == 'string' ) {
-            function isEmoji( text ) {
-                const onlyEmojis = text.replace(new RegExp('[\u0000-\u1eeff]', 'g'), '');
-                const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '');
-                return onlyEmojis.length === visibleChars.length;
-            };
-            function emojiUnicode( emoji ) {
-                var comp;
-                if (emoji.length === 1) {
-                    comp = emoji.charCodeAt(0);
+            if (body.reactionEmojiCustom && body.reactionEmojiCustom == 'on') {
+                // console.log(1);
+                if ( !body.reactionEmoji.match(/^([0-9]+)$/) ) {
+                    alerts.push( 'Reaction role emoji cannot be longer than one emoji' );
+                } else if ( !guild.emojis.cache.has(body.reactionEmoji) ) {
+                    alerts.push( 'Invalid emoji ID provided' );
+                } else {
+                    reactionRole.emoji = body.reactionEmoji;
                 }
-                comp = (
-                    (emoji.charCodeAt(0) - 0xD800) * 0x400
-                  + (emoji.charCodeAt(1) - 0xDC00) + 0x10000
-                );
-                if (comp < 0) {
-                    comp = emoji.charCodeAt(0);
-                }
-                return comp.toString("16");
-            };
-
-            if ( body.reactionEmoji.length > 2 ) {
-                alerts.push( 'Reaction role emoji cannot be longer than one emoji' );
-            } else if ( !isEmoji( body.reactionEmoji ) ) {
-                alerts.push( 'You need to provide a valid emoji' );
             } else {
-                reactionRole.emoji = body.reactionEmoji;
-            };
-        };
+                // console.log(2);
+                if ( body.reactionEmoji.length > 2 ) {
+                    alerts.push( 'Reaction role emoji cannot be longer than one emoji' );
+                } else if ( !isEmoji( body.reactionEmoji ) ) {
+                    alerts.push( 'You need to provide a valid emoji' );
+                } else {
+                    reactionRole.emoji = body.reactionEmoji;
+                }
+            }
+        }
 
         if ( reactionRole.mID && reactionRole.cID && reactionRole.rID && reactionRole.emoji ) {
             let existingReactionRoles = await syniks.services.reactionRoles.get( guild.id ),
@@ -243,9 +259,9 @@ module.exports = async ( guild, body = {} ) => {
                 alerts.push( 'The reaction role combination you provided already exists' );
             } else {
                 await syniks.db.reactStorage.create( Object.assign( reactionRole, { gID: guild.id } ) );
-            };
-        };
-    };
+            }
+        }
+    }
 
 
     // // lockdown Roles
@@ -255,8 +271,8 @@ module.exports = async ( guild, body = {} ) => {
 
         if ( missingRoles.length > 0 ) {            
             guild.lockdownRoles = guild.lockdownRoles.filter( r => !missingRoles.includes( r ) );
-        };
-    };
+        }
+    }
     if ( body.addLockdownRole && body.addLockdownRole != 'null' && didChange( 'addLockdownRole' ) && typeof body.addLockdownRole == 'string' ) {
         if ( !guild.roles.cache.has( body.addLockdownRole ) ) {
             alerts.push( 'Invalid lockdown role ID provided' );
@@ -264,11 +280,11 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'The role you provided is already a lockdown role' );
         } else {
             guild.lockdownRoles.push( body.addLockdownRole );
-        };
-    };
+        }
+    }
     if ( body.lockdownRoles || body.addLockdownRole ) {
         await syniks.services.lockdownRoles.set( guild.id, { roles: guild.lockdownRoles } );
-    };
+    }
 
     // // Leave Message
     // leaveChannel:       syniks.db.DataTypes.STRING,
@@ -277,8 +293,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Invalid leave channel ID provided' );
         } else if (  guild.channels.cache.get( body.leaveChannel ) && guild.channels.cache.get( body.leaveChannel ).type == 'text' || body.leaveChannel == 'null' ) {
             guild.config.leaveChannel = body.leaveChannel == 'null' ? null : body.leaveChannel;
-        };
-    };
+        }
+    }
     
     // leaveImage:         syniks.db.DataTypes.STRING
     if ( body.leaveImage != undefined && didChange( 'leaveImage' ) && typeof body.leaveImage == 'string' ) {
@@ -286,8 +302,8 @@ module.exports = async ( guild, body = {} ) => {
             alerts.push( 'Leave image must be a valid image URL' );
         } else {
             guild.config.leaveImage = body.leaveImage == '' ? null : body.leaveImage;
-        };
-    };
+        }
+    }
 
 
     // Update Config
@@ -312,9 +328,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setTitle( body.title );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
             
             if ( body.description && typeof body.description == 'string' ) {
                 if ( body.description.length > 4096 ) {
@@ -324,9 +340,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setDescription( body.description );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
             if ( body.url && typeof body.url == 'string' ) {
                 if ( !validURL( body.url ) ) {
@@ -336,9 +352,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setURL( body.url );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
             if ( body.color && typeof body.color == 'string' ) {
                 if ( !body.color.startsWith( '#' ) ) {
@@ -348,9 +364,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setColor( body.color );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
             if ( body.icon && typeof body.icon == 'string' ) {
                 if ( !isImageURL( body.icon ) ) {
@@ -360,53 +376,53 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setThumbnail( body.icon );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
-            let author = {};
+            let author = {}
 
             if ( body.author_name && typeof body.author_name == 'string' ) {
                 if ( body.author_name.length > 256 ) {
                     alerts.push( 'Embed author name cannot be longer than 256 characters' );
                 } else {
                     author.name = body.author_name;
-                };
-            };
+                }
+            }
 
             if ( body.author_icon && typeof body.author_icon == 'string' ) {
                 if ( !isImageURL( body.author_icon ) ) {
                     alerts.push( 'Embed author icon needs to be a valid URL' );
                 } else {
                     author.icon = body.author_icon;
-                };
-            };
+                }
+            }
 
             if ( body.author_url && typeof body.author_url == 'string' ) {
                 if ( !validURL( body.author_url ) ) {
                     alerts.push( 'Embed author URL needs to be a valid URL' );
                 } else {
                     author.url = body.author_url;
-                };
-            };
+                }
+            }
 
             try {
-                embed.author = embed.author || {};
+                embed.author = embed.author || {}
 
                 if ( author.name ) {
                     embed.author.name = author.name;
-                };
+                }
                 
                 if ( author.icon ) {
                     embed.author.iconURL = author.icon;
-                };
+                }
 
                 if ( author.url ) {
                     embed.author.url = author.url;
-                };
+                }
             } catch ( e ) {
                 alerts.push( e.message );
-            };
+            }
 
             if ( body.footer && typeof body.footer == 'string' ) {
                 if ( body.footer.length > 2048 ) {
@@ -416,9 +432,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setFooter( body.footer );                        
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
             let fields = Object.keys( body ).filter( k => k.startsWith( 'field-' ) );
             for ( let i = 0; i < fields.length; i++ ) {
@@ -432,16 +448,16 @@ module.exports = async ( guild, body = {} ) => {
                     } catch ( e ) {
                         alerts.push( e.message );
                     }
-                };
-            };
+                }
+            }
 
             try {
                 embedChannel.send( embed );
             } catch ( e ) {
                 alerts.push( e.message );
             }
-        };
-    };
+        }
+    }
     
     
     // Message Embed Editor
@@ -457,10 +473,10 @@ module.exports = async ( guild, body = {} ) => {
                 messageFetchID = await messageFetchChannel.messages.fetch(body.messageFetchID);
                 if(!messageFetchID) {
                     throw new Error();
-                };
+                }
             } catch (error) {
                 alerts.push( 'Invalid message ID provided' );
-            };
+            }
 
             if ( body.editTitle != undefined && typeof body.editTitle == 'string' ) {
                 if ( !body.editTitle ) {
@@ -472,9 +488,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setTitle( body.editTitle );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
             
             if ( body.editDescription && typeof body.editDescription == 'string' ) {
                 if ( body.editDescription.length > 4096 ) {
@@ -484,9 +500,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setDescription( body.editDescription );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
             if ( body.editUrl && typeof body.editUrl == 'string' ) {
                 if ( !validURL( body.editUrl ) ) {
@@ -496,9 +512,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setURL( body.editUrl );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
             if ( body.editColor && typeof body.editColor == 'string' ) {
                 if ( !body.editColor.startsWith( '#' ) ) {
@@ -508,9 +524,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setColor( body.editColor );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
             if ( body.editIcon && typeof body.editIcon == 'string' ) {
                 if ( !isImageURL( body.editIcon ) ) {
@@ -520,53 +536,53 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setThumbnail( body.editIcon );
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
-            let author = {};
+            let author = {}
 
             if ( body.edit_author_name && typeof body.edit_author_name == 'string' ) {
                 if ( body.edit_author_name.length > 256 ) {
                     alerts.push( 'Embed author name cannot be longer than 256 characters' );
                 } else {
                     author.name = body.edit_author_name;
-                };
-            };
+                }
+            }
 
             if ( body.edit_author_icon && typeof body.edit_author_icon == 'string' ) {
                 if ( !isImageURL( body.edit_author_icon ) ) {
                     alerts.push( 'Embed author icon needs to be a valid URL' );
                 } else {
                     author.icon = body.edit_author_icon;
-                };
-            };
+                }
+            }
 
             if ( body.edit_author_url && typeof body.edit_author_url == 'string' ) {
                 if ( !validURL( body.edit_author_url ) ) {
                     alerts.push( 'Embed author URL needs to be a valid URL' );
                 } else {
                     author.url = body.edit_author_url;
-                };
-            };
+                }
+            }
 
             try {
-                embed.author = embed.author || {};
+                embed.author = embed.author || {}
 
                 if ( author.name ) {
                     embed.author.name = author.name;
-                };
+                }
                 
                 if ( author.icon ) {
                     embed.author.iconURL = author.icon;
-                };
+                }
 
                 if ( author.url ) {
                     embed.author.url = author.url;
-                };
+                }
             } catch ( e ) {
                 alerts.push( e.message );
-            };
+            }
 
             if ( body.editFooter && typeof body.editFooter == 'string' ) {
                 if ( body.editFooter.length > 2048 ) {
@@ -576,9 +592,9 @@ module.exports = async ( guild, body = {} ) => {
                         embed.setFooter( body.editFooter );                        
                     } catch ( e ) {
                         alerts.push( e.message );
-                    };
-                };
-            };
+                    }
+                }
+            }
 
             let fields = Object.keys( body ).filter( k => k.startsWith( 'field-' ) && k.endsWith( '-edit' ) );
             for ( let i = 0; i < fields.length; i++ ) {
@@ -592,23 +608,23 @@ module.exports = async ( guild, body = {} ) => {
                     } catch ( e ) {
                         alerts.push( e.message );
                     }
-                };
-            };
+                }
+            }
 
             try {
                 if(messageFetchID) {
                     messageFetchID.edit( embed );
-                };
+                }
             } catch ( e ) {
                 alerts.push( e.message );
             }
-        };
-    };
+        }
+    }
     
     
     // Return alerts & new config
     return {
         config: await syniks.services.config.get( guild.id ),
         alerts
-    };
-};
+    }
+}

@@ -8,7 +8,7 @@ function toColor( num ) {
         a = ( ( num & 0xFF000000 ) >>> 24 ) / 255;
 
     return 'rgba(' + [ r, g, b, a ].join( ',' ) + ')';
-};
+}
 %>
 
 <div style="display: flex; flex-wrap: wrap; justify-content: center;">
@@ -18,7 +18,7 @@ function toColor( num ) {
             <p class="card-text">Add a new reaction role</p>
 
             <br>
-            
+
             <div class="form-group">
                 <label>Role</label>
                 <%- include('../roleSelector.html', { name: 'reactionRoleID' }) %>
@@ -41,8 +41,14 @@ function toColor( num ) {
             <hr>
 
             <div class="form-group">
-                <label>Emoji</label>
-                <input type="text" class="form-control" id="reactionEmoji" name="reactionEmoji" placeholder="Emoji" maxlength="2">
+                <label>Emoji<br>(Tick the checkbox to use a custom emoji ID)</label>
+                <div class="input-group mb-3">
+                    <div class="input-group-text bg-primary" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
+                        <input class="form-check-input mt-0" type="checkbox" id="reactionEmojiCustom" name="reactionEmojiCustom">
+                    </div>
+                    
+                    <input type="text" class="form-control" id="reactionEmoji" name="reactionEmoji" placeholder="Emoji">
+                </div>                 
             </div>
 
         </div>
@@ -97,7 +103,7 @@ function toColor( num ) {
                                 </div>
 
                                 <hr>
-                        
+
                                 <div class="form-group">
                                     <label>Emoji</label>
                                     <br>
