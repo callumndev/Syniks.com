@@ -13,16 +13,16 @@ module.exports = class events extends EventEmitter {
 
         fs.readdirSync( path.join( eventsPath ) )
             .forEach( event => this.set( event, require( path.join( eventsPath, event ) ) ) );
-    };
+    }
 
     handleEvent( event ) {
         this.client.on( event.config.event, ( ...args ) => event( ...args, this.client ) );
-    };
+    }
 
 
     get( event ) {
         return this.events.get( event );
-    };
+    }
 
     set( name, event ) {
         if ( typeof event != 'function' ) throw new Error( 'Event needs to be typeof object' );
@@ -37,7 +37,7 @@ module.exports = class events extends EventEmitter {
         this.emit( 'set', event );
 
         return;
-    };
+    }
 
 
     isEnabled( name ) {
@@ -45,14 +45,14 @@ module.exports = class events extends EventEmitter {
         if ( !event ) throw new Error( `Event ${ name } not found` );
 
         return !event.config.disabled;
-    };
+    }
 
     isDisabled( name ) {
         const event = this.get( name );
         if ( !event ) throw new Error( `Event ${ name } not found` );
 
         return event.config.disabled;
-    };
+    }
 
     enable( name ) {
         const event = this.get( name );
@@ -67,8 +67,8 @@ module.exports = class events extends EventEmitter {
             this.set( name, event );
         } catch ( e ) {
             throw new Error( e );
-        };
-    };
+        }
+    }
 
     disable( name ) {
         const event = this.get( name );
@@ -78,5 +78,5 @@ module.exports = class events extends EventEmitter {
             throw new Error( `Event ${ name } is already disabled` );
 
         event.config.disabled 
-    };
-};
+    }
+}

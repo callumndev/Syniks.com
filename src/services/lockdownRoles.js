@@ -1,5 +1,6 @@
 module.exports = {
     async get( guild ) {
+        // eslint-disable-next-line no-unused-vars
         let [ lockdownConfig, created ] = await syniks.db.lockdownConfig.findOrCreate( { where: { guild } } );
         
         return lockdownConfig.roles;
@@ -14,4 +15,4 @@ module.exports = {
 
         return reactionRoles.length;
     }
-};
+}

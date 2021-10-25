@@ -17,8 +17,8 @@ dashboard.get( '/:guildID', syniks.util.auth.check, async ( req, res ) => {
             member = guild.members.cache.get( req.user.id );
         } catch ( e ) {
             console.error( `[Error] [Guild: ${ guild.name } ${ guild.id }] Error fetching member ${ req.user.id }: ${ e.message }` );
-        };
-    };
+        }
+    }
 
     if ( !member || !member.permissions.has( 'MANAGE_GUILD' ) ) return syniks.util.throwError( 403, req, res );
 
@@ -46,8 +46,8 @@ dashboard.post( '/:guildID', syniks.util.auth.check, async ( req, res ) => {
             member = guild.members.cache.get( req.user.id );
         } catch ( e ) {
             console.error( `[Error] [Guild: ${ guild.name } ${ guild.id }] Error fetching member ${ req.user.id }: ${ e.message }` );
-        };
-    };
+        }
+    }
 
     if ( !member || !member.permissions.has( 'MANAGE_GUILD' ) ) return syniks.util.throwError( 403, req, res );
 
@@ -70,4 +70,4 @@ module.exports = dashboard;
 module.exports.config = {
     path: '/dashboard',
     enabled: true
-};
+}

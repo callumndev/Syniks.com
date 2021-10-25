@@ -1,7 +1,7 @@
 <%
     function capitalizeFirstLetter( string ) {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
-    };
+    }
     
     events = events.map( event => ( { event, name: capitalizeFirstLetter( event.replace( /([a-z0-9])([A-Z])/g, '$1 $2' ) ) } ) );
 %>
@@ -49,12 +49,12 @@
                                 );
                                 
                                 $( '#alertsModal' ).modal( 'show' );
-                            };
+                            }
 
                             let selectedPage = $( '#dashboardTabs' ).find( 'a[aria-selected="true"]' )[ 0 ];
                             if ( selectedPage && alerts.length <= 0 ) {
                                 window.location = `${ window.location.pathname }?page=${ encodeURIComponent( $(selectedPage).attr( 'href' ).replace( '#', '' ) ) }`;
-                            };
+                            }
                         }
                     } );
                 } );
@@ -70,18 +70,18 @@
                             sParameterName = sURLVariables[ i ].split( '=' );
                             if ( sParameterName[ 0 ] === sParam ) {
                                 return typeof sParameterName[ 1 ] === undefined ? true : decodeURIComponent( sParameterName[ 1 ] );
-                            };
-                        };
+                            }
+                        }
 
                         return false;
-                    };
+                    }
 
                     let page = getUrlParameter( 'page' );
                     if ( typeof page == 'string' ) {
                         let pageTab = $( '#dashboardTabs' ).find( `a[href="#${ page }"]` )[ 0 ];
                         if ( pageTab ) pageTab.click();
-                    };                    
-                } catch ( e ) {};
+                    }                    
+                } catch ( e ) {}
             } );
         </script>
         

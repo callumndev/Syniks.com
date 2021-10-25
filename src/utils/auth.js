@@ -6,6 +6,6 @@ module.exports = {
             res.status( 403 ).redirect( '/auth/login' );
         } else {
             next();
-        };
+        }
     }
-};
+}

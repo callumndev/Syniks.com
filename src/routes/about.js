@@ -11,4 +11,4 @@ module.exports = about;
 module.exports.config = {
     path: '/about',
     enabled: true
-};
+}

@@ -7,5 +7,5 @@ module.exports = class SyniksClient extends Client {
         super();
         
         this.events = new events( this, { eventsPath } );
-    };
-};
+    }
+}

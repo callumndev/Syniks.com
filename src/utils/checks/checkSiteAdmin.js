@@ -6,5 +6,5 @@ module.exports = ( req, res, next ) => {
         syniks.util.throwError( 403, req, res );
     } else {
         next();
-    };
-};
+    }
+}

@@ -122,13 +122,13 @@ $( document ).ready( () => {
             color: '',
             fields: [],
             footer: ''
-        };
+        }
         
     function resetEmbed() {
         $( '.embed-inner-edit' ).html( '' );
         $( '.embed-footer-edit' ).remove();
         $( '.embed-thumb-edit' ).remove();
-    };
+    }
     
     function updateEmbed( _embed ) {
         resetEmbed();
@@ -137,29 +137,29 @@ $( document ).ready( () => {
             $( '.embed-inner-edit' ).append( `<div class="embed-title-edit"><a href="${ _embed.url }">${ _embed.title }</a></div>` );
         } else {
             $( '.embed-inner-edit' ).append( `<div class="embed-title-edit">${ _embed.title }</div>` );
-        };
+        }
         
         if ( _embed.description ) {
             $( '.embed-inner-edit' ).append( `<div class="embed-description-edit">${ _embed.description }</div>` );
-        };
+        }
         
         if ( _embed.color ) {
             $( '.side-colored-edit' ).css( 'background-color', _embed.color );
-        };
+        }
         
         if ( _embed.author.name ) {
             $( '.embed-title-edit' ).before( `<div class="embed-author-edit"><a class="embed-author-name-edit" href="${ _embed.author.url }">${ _embed.author.name }</a></div>` );
             
             if ( _embed.author.icon ) {
                 $( '.embed-author-name-edit' ).before( `<img class="embed-author-icon-edit" src="${ _embed.author.icon }" />` );
-            };
-        };
+            }
+        }
         
         if ( _embed.thumb_url ) {
             $( '.card.embed-edit .card-body' ).append( `<img class="embed-thumb-edit" src="${ _embed.thumb_url }" />` );
             $( '.embed-thumb-edit' ).height( $( '.embed-thumb-edit' )[ 0 ].naturalHeight );
             $( '.embed-thumb-edit' ).css('min-height', '50px');
-        };
+        }
         
         $( '.embed-inner-edit' ).append( `<div class="fields-edit"></div>` );
         
@@ -170,12 +170,12 @@ $( document ).ready( () => {
                     <div class="field-value-edit">${ field.value }</div>
                 </div>
             `);
-        };
+        }
         
         if ( _embed.footer ) {
             $( '.card.embed-edit' ).append( `<div class="embed-footer-edit"><span>${ _embed.footer }</span></div>` );
-        };
-    };
+        }
+    }
     
     updateEmbed( _embed );
     
@@ -224,7 +224,7 @@ $( document ).ready( () => {
                 
                 deleteField( i );
             } );
-        };
+        }
         
         $( '.input-fields-edit' ).append( `<button id="add-field-edit" class="btn btn-success">Add Field</button>` );
         
@@ -233,7 +233,7 @@ $( document ).ready( () => {
             
             addField();
         } );
-    };
+    }
     
     generateInputFields( _fields );
     
@@ -241,19 +241,19 @@ $( document ).ready( () => {
         _embed.fields[ index ].name = value;
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateFieldValue( index, value ) {
         _embed.fields[ index ].value = value;
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateFieldInline( index, value ) {
         _embed.fields[ index ].inline = value;
         
         updateEmbed( _embed );
-    };
+    }
     
     function deleteField( index ) {
         _embed.fields.splice( index, 1 );
@@ -263,7 +263,7 @@ $( document ).ready( () => {
         _fields -= 1;
         
         generateInputFields( _fields );
-    };
+    }
     
     function addField() {
         _embed.fields.push( { inline: true } );
@@ -271,61 +271,61 @@ $( document ).ready( () => {
         _fields += 1;
         
         generateInputFields( _fields );
-    };
+    }
     
     function updateTitle( value ) {
         _embed.title = value || '';
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateUrl( value ) {
         _embed.url = value || '';
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateThumb( value ) {
         _embed.thumb_url = value || false;
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateDescription( value ) {
         _embed.description = value || '';
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateColor( value ) {
         _embed.color = value || false;
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateAuthorName( value ) {
         _embed.author.name = value || '';
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateAuthorUrl( value ) {
         _embed.author.url = value || '';
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateAuthorIcon( value ) {
         _embed.author.icon = value || '';
         
         updateEmbed( _embed );
-    };
+    }
     
     function updateFooter( value ) {
         _embed.footer = value || '';
         
         updateEmbed( _embed );
-    };
+    }
     
     function addWarning( item, type, message ) {
         item.addClass( 'is-invalid' );
@@ -333,8 +333,8 @@ $( document ).ready( () => {
         
         if ( $( `#${ type }-feedback` ).length === 0 ) {
             item.after( `<div class="form-control-feedback text-warning" id="${ type }-feedback">${ message }</div>` );
-        };
-    };
+        }
+    }
     
     function addSuccess( item, type ) {
         item.removeClass( 'is-invalid' );
@@ -342,7 +342,7 @@ $( document ).ready( () => {
         item.addClass( 'is-valid' );
         
         $( `#${ type }-feedback` ).remove();
-    };
+    }
     
     $( '#editTitle' ).keyup( () => {
         let item = $( '#editTitle' );
@@ -354,7 +354,7 @@ $( document ).ready( () => {
             addSuccess( item, 'editTitle' );
             
             updateTitle( title );
-        };
+        }
     } );
     
     $( '#editUrl' ).keyup( () => {
@@ -367,7 +367,7 @@ $( document ).ready( () => {
             addSuccess( item, 'editUrl' );
             
             updateUrl( url );
-        };
+        }
     } );
     
     $( '#editIcon' ).keyup( () => {
@@ -380,7 +380,7 @@ $( document ).ready( () => {
             addSuccess( item, 'editIcon' );
             
             updateThumb( icon );
-        };
+        }
     } );
     
     $( '#editDescription' ).keyup( () => {
@@ -415,7 +415,7 @@ $( document ).ready( () => {
             addSuccess( item, 'edit_author_url' );
             
             updateAuthorUrl( author_url );
-        };
+        }
     } );
     
     $( '#edit_author_icon' ).keyup( () => {
@@ -428,7 +428,7 @@ $( document ).ready( () => {
             addSuccess( item, 'edit_author_icon' );
             
             updateAuthorIcon( author_icon );
-        };
+        }
     } );
     
     $( '#editFooter' ).keyup( () => {
@@ -446,19 +446,18 @@ $( document ).ready( () => {
             type: 'post',
             url: `${window.location.origin}/api/embed/fetch`,
             data: { channel: $( '#messageFetchChannel' ).val(), id: $( '#messageFetchID' ).val() },
-            // success: function( data ) {
             complete: function(jqXHR, status) {
                 addSuccess( $( '#messageFetchID' ), 'messageFetchID' );
                 
                 if ( status == 'error' ) {
                     return addWarning( $( '#messageFetchID' ), 'messageFetchID', 'Message embed not found' );
-                };
+                }
                 
                 data = jqXHR.responseJSON;
-                data = data && typeof data == 'object' ? data : {};
-                data.author = data.author && typeof data.author == 'object' ? data.author : {};
-                data.thumbnail = data.thumbnail && typeof data.thumbnail == 'object' ? data.thumbnail : {};
-                data.footer = data.footer && typeof data.footer == 'object' ? data.footer : {};
+                data = data && typeof data == 'object' ? data : {}
+                data.author = data.author && typeof data.author == 'object' ? data.author : {}
+                data.thumbnail = data.thumbnail && typeof data.thumbnail == 'object' ? data.thumbnail : {}
+                data.footer = data.footer && typeof data.footer == 'object' ? data.footer : {}
 
                 updateEmbed({
                     ...data,

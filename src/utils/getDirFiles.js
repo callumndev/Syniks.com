@@ -8,14 +8,15 @@ function read( dir ) {
         _files = [];
             
     dirs.forEach( directory => {
+        // eslint-disable-next-line no-unused-vars
         for ( const [ k, v ] of Object.entries( read( path.join( dir, directory ) ) ) ) {
             _files.push( { name: v.name, util: v.util } );
-        };
+        }
     } );
 
     files.forEach( file => _files.push( { name: file.split( '.' )[ 0 ], util: require( path.join( dir, file ) ) } ) );
 
     return _files;
-};
+}
 
 module.exports = read;

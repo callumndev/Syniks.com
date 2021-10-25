@@ -6,14 +6,12 @@ module.exports = {
             guild.config = await syniks.services.config.get( guild.id );
             guild.reactionRoles = await syniks.services.reactionRoles.get( guild.id );
             guild.lockdownRoles = await syniks.services.lockdownRoles.get( guild.id );
-        };
+        }
 
         return guild;
     },
 
-    set( id, newConfig ) {},
-
     count() {        
         return syniks.services.discord.bot.guilds.cache.size;
     }
-};
+}

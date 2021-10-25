@@ -6,14 +6,14 @@ module.exports = async bot => {
             return arr
                 .map( ( l, i, arr ) => arr.indexOf( l ) == 0 ? l : `   ${ l }` )
                 .join( '\n' );
-        };
+        }
 
         args = args
             .map( arg => typeof arg == 'object' ? logArray( arg ) : arg )
             .join( `\n${ seperator }\n` );
         
         console.info( args );
-    };
+    }
 
     readyMessage( '_____________________', [
         `[Syniks - Bot] ${ bot.user.tag } is online`,
@@ -30,10 +30,10 @@ module.exports = async bot => {
     ] );
 
     bot.emit( 'readyForApp' );
-};
+}
 
 
 module.exports.config = {
     event: 'ready',
     disabled: false
-};
+}

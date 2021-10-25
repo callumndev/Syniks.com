@@ -1,5 +1,6 @@
 module.exports = {
     async get( id ) {
+        // eslint-disable-next-line no-unused-vars
         let [ config, created ] = await syniks.db.config.findOrCreate( { where: { id } } );
 
         return config.dataValues;
@@ -14,4 +15,4 @@ module.exports = {
 
         return configs.length;
     }
-};
+}

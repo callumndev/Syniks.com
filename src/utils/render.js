@@ -13,7 +13,7 @@ module.exports = ( req, res, template, data = {} ) => {
         events: syniks.settings.events,
         
         ...data
-    };
+    }
 
     res.render( template, baseData );
-};
+}

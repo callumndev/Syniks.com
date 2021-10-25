@@ -13,4 +13,4 @@ module.exports = main;
 module.exports.config = {
     path: '/',
     enabled: true
-};
+}

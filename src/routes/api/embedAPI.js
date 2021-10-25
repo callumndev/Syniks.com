@@ -15,12 +15,12 @@ embed.post( '/fetch', syniks.util.auth.check, async (req, res) => {
                 let msgEmbed = message.embeds[0];
                 if (msgEmbed) {
                     embed = msgEmbed;
-                };
-            };
+                }
+            }
         } catch (error) {
-            
-        };
-    };
+            return false;
+        }
+    }
     
     res.status(!embed ? 404 : 200).send(embed);
 } );
@@ -30,4 +30,4 @@ module.exports = embed;
 module.exports.config = {
     path: '/api/embed',
     enabled: true
-};
+}

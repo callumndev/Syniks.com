@@ -24,4 +24,4 @@ module.exports = auth;
 module.exports.config = {
     path: '/auth',
     enabled: true
-};
+}

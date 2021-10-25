@@ -11,4 +11,4 @@ module.exports = user;
 module.exports.config = {
     path: '/',
     enabled: true
-};
+}
